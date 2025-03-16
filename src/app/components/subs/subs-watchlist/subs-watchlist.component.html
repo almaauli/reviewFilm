@@ -1,0 +1,51 @@
+<app-navbar-subs></app-navbar-subs>
+<!DOCTYPE html>
+<html lang="id">
+<body>
+<div class="container my-5">
+    <h2 class="text-center mb-4 text-secondary"> My Watchlist</h2>
+  
+    <div *ngIf="watchlist.length > 0; else emptyWatchlist">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4" *ngFor="let film of watchlist">
+          <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="height: 100%;">
+            <a [routerLink]="['/detail-film', film.id_film]" class="text-decoration-none">
+              <img [src]="getImagePath(film.gambar_film)" class="card-img-top img-fluid hover-zoom" [alt]="film.nama_film" style="height: 300px; object-fit: cover;" />
+            </a>
+            <div class="card-body text-center d-flex flex-column justify-content-between">
+              <h5 class="card-title text-dark fw-bold">{{ film.nama_film }}</h5>
+              <p class="card-text text-muted">{{ film.deskripsi | slice: 0:80 }}...</p>
+              <div class="d-flex justify-content-center align-items-center gap-2">
+                <span class="badge bg-warning text-dark">⭐ {{ film.rating }}</span>
+                <span class="badge bg-secondary">⏳ {{ convertToHours(film.durasi) }}</span>
+              </div>
+              <button class="btn btn-danger w-100 mt-3 fw-semibold" (click)="removeFromWatchlist(film.id_film)">
+                <i class="bi bi-bookmark-x"></i> Hapus
+              </button>
+              <a [routerLink]="['/detail-filmsubs', film.id_film]" class="btn btn-dark btn-sm mt-2">Lihat Detail</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Jika Watchlist Kosong -->
+    <ng-template #emptyWatchlist>
+      <div class="text-center my-5 p-4 border rounded-4 shadow-sm bg-light">
+        <h4 class="text-secondary">Watchlist Kamu Kosong 😞</h4>
+        <p class="text-muted">Tambahkan film favoritmu agar mudah ditemukan nanti.</p>
+        <a class="btn btn-primary btn-lg rounded-pill shadow" [routerLink]="['/subs-home']">
+          <i class="bi bi-film"></i> Cari Film
+        </a>
+      </div>
+    </ng-template>
+  </div>
+
+  <footer class="kaki bg-dark text-white text-center py-4 mt-5 w-100">
+    <p>&copy; 2025 Moviers. All rights reserved.</p>
+    <p>
+      <a href="#" class="text-white text-decoration-none me-3">Kebijakan Privasi</a>
+      <a href="#" class="text-white text-decoration-none">Syarat dan Ketentuan</a>
+    </p>
+  </footer>
+  </body>
+  </html>

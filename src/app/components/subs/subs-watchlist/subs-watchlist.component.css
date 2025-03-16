@@ -1,0 +1,45 @@
+  html {
+    scroll-behavior: smooth;
+  }
+  .section {
+    position: relative;
+    padding-top: 60px;
+  }
+
+  h2 {
+    color: #343a40;
+    text-align: center;
+  }
+
+  body {
+    padding-top: 60px;
+    background-color: #f8f9fa;
+  }
+  .hover-zoom {
+    transition: transform 0.3s ease-in-out;
+  }
+  .hover-zoom:hover {
+    transform: scale(1.05);
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+  }
+  .card-body {
+    flex-grow: 1;
+  }
+  .btn {
+      width: 100%;
+      border-radius: 8px;
+    }
+  
+  .kaki {
+    width: 100%;
+    margin: 0;
+    padding: 20px 0;
+    background-color: #000;
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+  

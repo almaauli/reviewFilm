@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Dashboard - SB Admin</title>
+  <body class="sb-nav-fixed">
+      <div id="navbar" *ngIf="isAdmin">
+        <app-nav-admin></app-nav-admin>
+      </div>
+      <div id="layoutSidenav" *ngIf="isAdmin">
+        <div id="sidenav">
+          <app-side-admin></app-side-admin>
+        </div>
+    </div>
+      <div id="layoutSidenav_content">
+        <main>
+          <div class="container-fluid px-4">
+            <h1 class="mt-4">Dashboard</h1>
+            <ol class="breadcrumb mb-4">
+              <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+            <div class="row">
+              <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                <div
+                  class="card shadow-sm hover-effect"
+                  style="background-color: #f8f9fa; border: 1px solid #ddd"
+                >
+                  <div class="card-body text-dark">
+                    <h6>Total User</h6>
+                    <h2>{{ totalUsers }}</h2>
+                  </div>
+                  <div class="card-footer bg-transparent">
+                    <a routerLink="/admin-tuser" class="text-dark stretched-link"
+                      >View Details</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                <div
+                  class="card shadow-sm hover-effect"
+                  style="background-color: #f8f9fa; border: 1px solid #ddd"
+                >
+                  <div class="card-body text-dark">
+                    <h6>Total Film</h6>
+                    <h2>{{ totalFilm }}</h2>
+                  </div>
+                  <div class="card-footer bg-transparent">
+                    <a routerLink="/admin-tfilm" class="text-dark stretched-link"
+                      >View Details</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                <div
+                  class="card shadow-sm hover-effect"
+                  style="background-color: #f8f9fa; border: 1px solid #ddd"
+                >
+                  <div class="card-body text-dark">
+                    <h6>Total Coment</h6>
+                    <h2>{{ totalComent }}</h2>
+                  </div>
+                  <div class="card-footer bg-transparent">
+                    <a routerLink="/admin-tcoment" class="text-dark stretched-link"
+                      >View Details</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                <div
+                  class="card shadow-sm hover-effect"
+                  style="background-color: #f8f9fa; border: 1px solid #ddd"
+                >
+                  <div class="card-body text-dark">
+                    <h6>Total Genre</h6>
+                    <h2>{{ totalGenre }}</h2>
+                  </div>
+                  <div class="card-footer bg-transparent">
+                    <a routerLink="/admin-tgenre" class="text-dark stretched-link"
+                      >View Details</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                <a routerLink="/admin-tnegara"> Country</a>
+              </div>
+              <div class="card-body">
+                <table id="datatablesSimple">
+                  <thead>
+                    <tr>
+                      <th>ID Negara</th>
+                      <th>Nama Negara</th>
+                      <th>Created At</th>
+                      <th>Updated At</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let negara of negaraList">
+                      <td>{{ negara.id_negara }}</td>
+                      <td>{{ negara.nama_negara }}</td>
+                      <td>{{ negara.created_at }}</td>
+                      <td>{{ negara.updated_at }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                <a routerLink="/admin-ttahun"> Year</a>
+              </div>
+              <div class="card-body">
+                <table id="datatablesSimple">
+                  <thead>
+                    <tr>
+                      <th>ID Tahun</th>
+                      <th>Tahun Rilis</th>
+                      <th>Created At</th>
+                      <th>Updated At</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let tahun of tahunList">
+                      <td>{{ tahun.id_tahun }}</td>
+                      <td>{{ tahun.tahun_rilis }}</td>
+                      <td>{{ tahun.created_at }}</td>
+                      <td>{{ tahun.updated_at }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+          <div class="container-fluid px-4">
+            <div
+              class="d-flex align-items-center justify-content-between small"
+            >
+              <div class="text-muted">Copyright &copy; Your Website 2023</div>
+              <div>
+                <a routerLink="#">Privacy Policy</a>
+                &middot;
+                <a routerLink="#">Terms &amp; Conditions</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+  </body>
+</html>

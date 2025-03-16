@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin Dashboard</title>
+  </head>
+  <body class="sb-nav-fixed">
+    <div id="navbar" *ngIf="isAdmin">
+      <app-nav-admin></app-nav-admin>
+    </div>
+    
+    <div id="layoutSidenav" *ngIf="isAdmin">
+      <div id="sidenav">
+        <app-side-admin></app-side-admin>
+      </div>
+    </div>
+
+      <div class="container my-4">
+        <h2>Tabel Negara</h2>
+        <ol class="breadcrumb mb-4">
+          <a routerLink="/admin-dashboard" class="breadcrumb-item">Dashboard</a>
+          <li class="breadcrumb-item active">Tabel Negara</li>
+        </ol>
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addNegaraModal">
+          Tambah Negara
+        </button>
+      
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID Negara</th>
+              <th>Nama Negara</th>
+              <th>Created At</th>
+              <th>Updated At</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let negara of negaraList">
+              <td>{{ negara.id_negara }}</td>
+              <td>{{ negara.nama_negara }}</td>
+              <td>{{ negara.created_at }}</td>
+              <td>{{ negara.updated_at }}</td>
+              <td>
+                <button class="btn btn-warning btn-sm me-1" (click)="editNegara(negara)">Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="deleteNegara(negara.id_negara)">Hapus</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Modal Tambah/Edit Negara -->
+      <div class="modal fade" id="addNegaraModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ isEditMode ? "Edit Negara" : "Tambah Negara" }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="negaraForm" (ngSubmit)="isEditMode ? updateNegara() : onSubmit()">
+                <div class="mb-3">
+                  <label class="form-label">Nama Negara</label>
+                  <input type="text" class="form-control" formControlName="namaNegara" />
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  {{ isEditMode ? "Perbarui" : "Simpan" }}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      </body>
+      </html>

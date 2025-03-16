@@ -1,0 +1,145 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { KomentarService } from '../../../services/coment.service';
+import { UserService } from '../../../services/user.service';
+import { FilmService } from '../../../services/film.service';
+import Swal from 'sweetalert2';
+import bootstrap from 'bootstrap';
+
+@Component({
+  selector: 'app-admin-tcoment',
+  templateUrl: './admin-tcoment.component.html',
+  styleUrls: ['./admin-tcoment.component.css'],
+})
+export class AdminTcomentComponent implements OnInit {
+  komentarList: any[] = [];
+  komentarForm: FormGroup;
+  selectedKomentarId: number | null = null;
+  isEditMode: boolean = false;
+  userRole: string | null = '';
+  filmList: any[] = []; // Untuk dropdown film
+  userList: any[] = []; 
+  isAdmin = false;
+
+  constructor(  private komentarService: KomentarService,
+    private filmService: FilmService,
+    private userService: UserService,
+    private fb: FormBuilder) {
+    this.komentarForm = this.fb.group({
+      id_film: ['', [Validators.required]],
+      id_user: ['', [Validators.required]],
+      rating_user: ['', [Validators.required, Validators.min(1), Validators.max(5)]],
+      komentar: ['', [Validators.required, Validators.maxLength(500)]],
+    });
+  }
+
+  ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    this.isAdmin = role === 'admin';
+    
+    this.loadKomentar();
+    this.userRole = localStorage.getItem('role');
+    console.log('User Role:', this.userRole);
+    this.loadDropdownData();
+  }
+
+  loadDropdownData(): void {
+    this.filmService.getFilm().subscribe((data) => (this.filmList= data));
+    this.userService.getUsers().subscribe((data) => (this.userList = data));
+  }  
+  loadKomentar(): void {
+    this.komentarService.getKomentar().subscribe(
+      (data) => {
+        this.komentarList = data;
+      },
+      (error) => {
+        console.error('Gagal mengambil data komentar:', error);
+        Swal.fire('Error!', 'Gagal mengambil data komentar. Silakan coba lagi.', 'error');
+      }
+    );
+  }
+
+  onSubmit(): void {
+    if (this.komentarForm.valid) {
+      this.komentarService.addKomentar(this.komentarForm.value).subscribe(
+        (response) => {
+          console.log('Komentar berhasil ditambahkan:', response);
+          this.loadKomentar();
+          this.komentarForm.reset();
+          Swal.fire('Sukses!', 'Komentar berhasil ditambahkan.', 'success');
+        },
+        (error) => {
+          console.error('Gagal menambahkan komentar:', error);
+          Swal.fire('Error!', 'Gagal menambahkan komentar.', 'error');
+        }
+      );
+    }
+  }
+
+  editKomentar(komentar: any): void {
+    this.selectedKomentarId = komentar.id_komentar;
+    this.isEditMode = true;
+    this.komentarForm.patchValue({
+      id_film: komentar.id_film,
+      id_user: komentar.id_user,
+      rating_user: komentar.rating_user,
+      komentar: komentar.komentar,
+    });
+
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const modalElement = document.getElementById('addKomentarModal');
+      if (modalElement) {
+        import('bootstrap').then((bootstrap) => {
+          const modalInstance = new bootstrap.Modal(modalElement);
+          modalInstance.show();
+        });
+      }
+    }
+  }
+
+  updateKomentar(): void {
+    if (this.komentarForm.valid && this.selectedKomentarId !== null) {
+      this.komentarService.updateKomentar(this.selectedKomentarId, this.komentarForm.value).subscribe(
+        (response) => {
+          console.log('Komentar berhasil diperbarui:', response);
+          this.loadKomentar();
+          this.komentarForm.reset();
+          this.selectedKomentarId = null;
+          this.isEditMode = false;
+          Swal.fire('Sukses!', 'Komentar berhasil diperbarui.', 'success');
+        },
+        (error) => {
+          console.error('Gagal memperbarui komentar:', error);
+          Swal.fire('Error!', 'Gagal memperbarui komentar.', 'error');
+        }
+      );
+    }
+  }
+
+  deleteKomentar(id: number): void {
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: 'Komentar akan dihapus secara permanen!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.komentarService.deleteKomentar(id).subscribe(
+          (response) => {
+            console.log('Komentar berhasil dihapus:', response);
+            this.loadKomentar();
+            Swal.fire('Terhapus!', 'Komentar berhasil dihapus.', 'success');
+          },
+          (error) => {
+            console.error('Gagal menghapus komentar:', error);
+            Swal.fire('Error!', 'Gagal menghapus komentar.', 'error');
+          }
+        );
+      }
+    });
+  }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Halaman Manajemen Genre" />
+    <meta name="author" content="Admin" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  </head>
+  <body class="sb-nav-fixed">
+    <div id="navbar" *ngIf="isAdmin">
+      <app-nav-admin></app-nav-admin>
+    </div>
+    
+    <div id="layoutSidenav" *ngIf="isAdmin">
+      <div id="sidenav">
+        <app-side-admin></app-side-admin>
+      </div>
+    </div>
+
+      <div class="container my-4">
+        <h2>Tabel Genre</h2>
+        <ol class="breadcrumb mb-4">
+          <li class="breadcrumb-item">
+            <a routerLink="/admin-dashboard">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">Tabel Genre</li>
+        </ol>
+
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addGenreModal" (click)="isEditMode = false; genreForm.reset()">Tambah Genre</button>
+
+        <div class="table-container">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID Genre</th>
+                <th>Nama Genre</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let genre of genreList">
+                <td>{{ genre.id_genre }}</td>
+                <td>{{ genre.nama_genre }}</td>
+                <td>{{ genre.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ genre.updated_at | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                  <button class="btn btn-warning btn-sm me-1" (click)="editGenre(genre)" data-bs-toggle="modal" data-bs-target="#addGenreModal">Edit</button>
+                  <button class="btn btn-danger btn-sm" (click)="deleteGenre(genre.id_genre)">Hapus</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal Tambah/Edit Genre -->
+      <div class="modal fade" id="addGenreModal" tabindex="-1" aria-labelledby="addGenreModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addGenreModalLabel">{{ isEditMode ? "Edit Genre" : "Tambah Genre" }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="genreForm" (ngSubmit)="isEditMode ? updateGenre() : onSubmit()">
+                <div class="mb-3">
+                  <label for="namaGenre" class="form-label">Nama Genre</label>
+                  <input
+                    type="text"
+                    id="namaGenre"
+                    class="form-control"
+                    formControlName="namaGenre"
+                    [class.is-invalid]="genreForm.get('namaGenre')?.invalid && genreForm.get('namaGenre')?.touched"
+                  />
+                  <div class="invalid-feedback" *ngIf="genreForm.get('namaGenre')?.invalid && genreForm.get('namaGenre')?.touched">
+                    Nama genre wajib diisi.
+                  </div>
+                </div>
+            
+                <button type="submit" class="btn btn-primary" [disabled]="genreForm.invalid">
+                  {{ isEditMode ? 'Update Genre' : 'Tambah Genre' }}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Bootstrap Bundle dengan Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

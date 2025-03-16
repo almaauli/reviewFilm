@@ -1,0 +1,58 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-lg-5 col-md-7 col-sm-9">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+      <div class="card-body p-4">
+        <h3 class="text-center fw-bold mb-3">Create Account</h3>
+        <p class="text-center text-muted mb-4">Join us and start exploring</p>
+        <form (ngSubmit)="register()" #registerForm="ngForm">
+          <div class="form-floating mb-3">
+            <input 
+              type="text" 
+              class="form-control rounded-3" 
+              id="name" 
+              name="name" 
+              placeholder="Name" 
+              [(ngModel)]="name" 
+              required
+            />
+            <label for="name">Full Name</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input 
+              type="email" 
+              class="form-control rounded-3" 
+              id="email" 
+              name="email" 
+              placeholder="Email" 
+              [(ngModel)]="email" 
+              required
+            />
+            <label for="email">Email</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input 
+              type="password" 
+              class="form-control rounded-3" 
+              id="password" 
+              name="password" 
+              placeholder="Password" 
+              [(ngModel)]="password" 
+              required
+            />
+            <label for="password">Password</label>
+          </div>
+          <button 
+            type="submit" 
+            class="btn btn-primary w-100 py-2 rounded-3 shadow-sm" 
+            [disabled]="!registerForm.valid"
+          >
+            Register
+          </button>
+        </form>
+        <div class="text-center mt-3">
+          <p class="mb-1">Already have an account? <a routerLink="/login" class="text-decoration-none">Login</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

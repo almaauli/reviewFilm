@@ -1,0 +1,140 @@
+:root {
+  --primary: #0d6efd;
+  --secondary: #6c757d;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --border-color: #dee2e6;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: var(--light);
+  color: var(--dark);
+  margin: 0;
+}
+
+h2 {
+  color: black;
+  margin-top: 35px;
+}
+
+#navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #343a40;
+}
+
+#layoutSidenav {
+  display: flex;
+  flex-direction: row;
+}
+
+#sidenav {
+  width: 250px;
+  position: fixed;
+  left: 0;
+  top: 56px; /* Sesuaikan dengan tinggi navbar */
+  bottom: 0;
+  background-color: #212529;
+}
+
+#layoutSidenav_content {
+  margin-left: 250px;
+  padding: 20px;
+  width: calc(100% - 250px);
+}
+
+.container {
+  margin-left: 260px; 
+  padding: 20px;
+  margin-top: 60px; 
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th, .table td {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.table th {
+  background-color: white;
+  color: black;
+}
+
+.table tbody tr:hover {
+  background-color: var(--light);
+}
+
+
+.btn {
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color:rgb(35, 85, 235);
+  color: white;
+}
+
+.btn-danger {
+  background-color:rgb(206, 62, 62);
+  color: white;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: white;
+}
+
+form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(138, 136, 136, 0.59);
+  border-radius: 5px;
+}
+
+.modal-content {
+  border-radius: 8px;
+}
+
+.table-container {
+    max-height: 400px; 
+    overflow-y: auto; 
+    margin-top: 20px; 
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+td img {
+  width: 50px; /* Sesuaikan ukuran sesuai kebutuhan */
+  height: 50px;
+  object-fit: cover; /* Agar gambar tetap proporsional tanpa distorsi */
+  border-radius: 50%; /* Opsional, untuk membuat gambar bulat */
+}

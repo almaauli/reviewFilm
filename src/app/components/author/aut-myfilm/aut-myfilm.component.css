@@ -1,0 +1,102 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: white;
+  color: black;
+  font-family: "Poppins", sans-serif;
+  padding-top: 50px;
+}
+
+h2 {
+  text-align: center;
+  color: black;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.film-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.film-card .card-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.film-card img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.film-card .card-title {
+  min-height: 3rem; /* Agar judul sejajar */
+}
+
+.film-card .card-text {
+  flex-grow: 1;
+}
+
+.film-card .d-flex {
+  justify-content: space-between;
+}
+
+
+.film-card:hover {
+  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.film-card h5,
+.film-card p {
+  color: black;
+}
+
+.film-image {
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.fab-btn {
+  position: fixed;
+  bottom: 90px; /* Naikkan tombol biar nggak ketutup footer */
+  right: 20px;
+  width: 65px;
+  height: 65px;
+  background: #ffcc00;
+  color: #141e30;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
+  z-index: 1000; /* Pastikan tombol di atas elemen lain */
+}
+
+.fab-btn:hover {
+  background: #ffdb4d;
+  transform: scale(1.1);
+}
+
+.kaki {
+  position: relative;
+  width: 100%;
+  padding: 15px 0;
+  font-size: 0.9rem;
+  background: #212529;
+  color: white;
+  text-align: center;
+}

@@ -1,0 +1,74 @@
+<app-nav-author></app-nav-author>
+<!DOCTYPE html>
+<html lang="id">
+<body>
+<div class="container mt-5">
+  <div *ngIf="film">
+    <div class="row">
+      <div class="col-lg-8">
+        <h2 class="text-center mb-4">{{ film.nama_film }}</h2>
+        <div class="card shadow-lg mb-4">
+          <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
+          <div class="card-body">
+            <p><strong>Genre:</strong> {{ film.genre }}</p>
+            <p><strong>Tahun:</strong> {{ film.tahun }}</p>
+            <p><strong>Negara:</strong> {{ film.negara }}</p>
+            <p><strong>Durasi:</strong>  {{ convertToHours(film.durasi) }}</p>
+            <p><strong>Rating:</strong> ⭐ {{ film.rating }}</p>
+            <p><strong>Deskripsi:</strong> {{ film.deskripsi }}</p>
+            <button class="btn btn-outline-secondary w-100 mt-2" (click)="addToWatchlist(film.id_film)">
+              <i class="bi bi-bookmark-plus"></i> Tambah ke Watchlist
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header">
+            <h4>Trailer</h4>
+          </div>
+          <div class="card-body">
+           <!-- Jika film.trailer adalah URL YouTube, tampilkan dengan iframe -->
+            <iframe *ngIf="isYouTubeVideo(film.trailer)" 
+            [src]="getEmbedUrl(film.trailer) | safeUrl"
+            width="100%" height="315" frameborder="0" allowfullscreen>
+            </iframe>
+
+            <!-- Jika film.trailer adalah file video yang diunggah, gunakan video tag -->
+            <video *ngIf="!isYouTubeVideo(film.trailer)" 
+            width="100%" height="315" controls>
+            <source [src]="getVideoPath(film.trailer)" type="video/mp4">
+            Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4 border-bottom pb-2">
+      <h4>Komentar ({{ comments.length }})</h4>
+      <button type="button" class="btn btn-outline-secondary rounded-pill px-3 shadow-sm" (click)="redirectToKomen(film.id_film)">
+        <i class="bi bi-chat-dots"></i> Tambah Komentar
+      </button>
+    </div>
+
+    <div *ngFor="let comment of comments" class="card mb-3 border-0 shadow-sm">
+      <div class="card-body">
+        <p class="mb-1"><strong>{{ comment.username }}</strong> <span class="text-warning">⭐ {{ comment.rating_user }}</span></p>
+        <p class="text-dark">{{ comment.komentar }}</p>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-secondary mt-3" (click)="goBack()">⬅ Cancel</button>
+  </div>
+</div>
+
+<footer class="kaki bg-dark text-white text-center py-4 mt-5 w-100">
+  <p>&copy; 2025 Moviers. All rights reserved.</p>
+  <p>
+    <a href="#" class="text-white text-decoration-none me-3">Kebijakan Privasi</a>
+    <a href="#" class="text-white text-decoration-none">Syarat dan Ketentuan</a>
+  </p>
+</footer>
+</body>
+</html>

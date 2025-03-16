@@ -1,0 +1,97 @@
+<app-navbar></app-navbar>
+<!DOCTYPE html>
+<html lang="id">
+<body>
+    <div class="container mt-4" *ngIf="currentSection === 'latest'">
+      <h2 class="text-center mb-4 text-secondary font-weight-bold display-4">Latest Film!</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4" *ngFor="let film of latestFilms">
+          <div class="film-card card d-flex flex-column h-100">
+            <div class="film-image">
+              <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
+              <span class="rating-badge">⭐ {{ film.rating }}</span>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ film.nama_film }}</h5>
+              <p class="card-text">{{ film.deskripsi | slice : 0 : 80 }}...</p>
+              <a [routerLink]="['/detail-film', film.id_film]" class="btn btn-dark btn-sm">Lihat Detail</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4" *ngIf="currentSection === 'popular'">
+      <h2 class="text-center mb-4 text-secondary font-weight-bold display-4">Populer Film!</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4" *ngFor="let film of popularFilms">
+          <div class="film-card card d-flex flex-column h-100">
+            <div class="film-image">
+              <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
+              <span class="rating-badge">⭐ {{ film.rating }}</span>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ film.nama_film }}</h5>
+              <p class="card-text">{{ film.deskripsi | slice : 0 : 80 }}...</p>
+              <a [routerLink]="['/detail-film', film.id_film]" class="btn btn-dark btn-sm">Lihat Detail</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4" *ngIf="currentSection === 'genre'">
+      <h2 class="text-center mb-4 text-secondary font-weight-bold display-4">Film Berdasarkan Genre</h2>
+      <div *ngIf="filmsByGenre.length > 0; else noFilms">
+        <div class="row justify-content-center">
+          <div class="col-md-6 col-lg-4" *ngFor="let film of filmsByGenre">
+            <div class="film-card card d-flex flex-column h-100">
+              <div class="film-image">
+                <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
+                <span class="rating-badge">⭐ {{ film.rating }}</span>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{ film.nama_film }}</h5>
+                <p class="card-text">{{ film.deskripsi | slice : 0 : 80 }}...</p>
+                <a [routerLink]="['/detail-film', film.id_film]" class="btn btn-dark btn-sm">Lihat Detail</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4" *ngIf="currentSection === 'list' && films.length > 0; else noFilms">
+      <h2 class="text-center mb-4 text-secondary font-weight-bold display-4">Daftar Film</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4" *ngFor="let film of films">
+          <div class="film-card card d-flex flex-column h-100">
+            <div class="film-image">
+              <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
+              <span class="rating-badge">⭐ {{ film.rating }}</span>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ film.nama_film }}</h5>
+              <p class="card-text">{{ film.deskripsi | slice : 0 : 80 }}...</p>
+              <a [routerLink]="['/detail-film', film.id_film]" class="btn btn-dark btn-sm">Lihat Detail</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noFilms>
+      <p class="tidak text-center text-muted"><i>Tidak ada film yang ditemukan.</i></p>
+    </ng-template>
+    
+    <button class="btn btn-outline-secondary mt-3 w-auto" (click)="goBack()">Cancel</button>
+
+    <footer class="kaki bg-dark text-white text-center py-4 mt-5 w-100">
+      <p>&copy; 2025 Moviers. All rights reserved.</p>
+      <p>
+        <a href="#" class="text-white text-decoration-none me-3">Kebijakan Privasi</a>
+        <a href="#" class="text-white text-decoration-none">Syarat dan Ketentuan</a>
+      </p>
+    </footer>
+  </body>
+</html>

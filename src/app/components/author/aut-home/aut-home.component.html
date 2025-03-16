@@ -1,0 +1,237 @@
+<app-nav-author></app-nav-author>
+    <!-- Hero Section -->
+    <div class="hero-section text-center text-white bg-dark py-5">
+      <h1>Selamat Datang Moviers!</h1>
+      <p>Temukan, Tonton, dan Review Film Favoritmu!</p>
+        <div class="container my-4">
+          <form [formGroup]="searchForm" (ngSubmit)="searchFilms()" class="search-form">
+            <div class="row justify-content-center">
+              <div class="col-md-6 position-relative">
+                <div class="input-group shadow-sm">
+                  <span class="input-group-text bg-primary text-white">
+                    <i class="bi bi-search"></i>
+                  </span>
+                  <input type="text" formControlName="query" class="form-control" placeholder="Cari film berdasarkan judul..." required>
+                  <button type="submit" class="btn btn-primary">Cari</button>
+                </div>
+              </div>
+            </div>
+          </form>          
+        </div>
+      </div>
+    
+    <div class="container mt-2">
+      <h2 class="custom-title">Film Terbaru</h2>
+    
+      <div id="latestFilmsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <!-- Loop untuk menampilkan film -->
+          <div class="carousel-item" *ngFor="let filmGroup of groupedLatestFilms; let i = index" [class.active]="i === 0">
+            <div class="row">
+              <div class="col-md-6 col-lg-4" *ngFor="let film of filmGroup">
+                <a class="film-card card text-decoration-none" [routerLink]="['/detail-filmaut', film.id_film]">
+                  <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
+                  <div class="card-body">
+                    <h5 class="card-title">{{ film.nama_film }}</h5>
+                    <p class="card-text">{{ film.deskripsi | slice : 0 : 100 }}...</p>
+                    <div class="rating-container">
+                      <span class="rating-badge">⭐{{ film.rating }}</span> 
+                      <span class="film-duration"> {{ convertToHours(film.durasi) }}</span>
+                    </div>                                       
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-item">
+            <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+              <a class="btn custom-btn2 btn-lg" [routerLink]="['/list-filmaut']" [queryParams]="{ section: 'latest' }">
+                Lihat Selengkapnya >
+              </a>
+            </div>
+          </div>
+          
+        <!-- Tombol Navigasi -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#latestFilmsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#latestFilmsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    
+
+    <div class="container my-5">
+      <div class="row d-flex justify-content-center gap-3"> <!-- Flexbox & spacing -->
+        <!-- Pilih Genre -->
+        <div class="col-md-3 col-sm-4">
+          <div class="dropdown">
+            <button class="btn w-100 custom-btn" type="button" data-bs-toggle="dropdown">
+              Pilih Genre
+            </button>
+            <ul class="dropdown-menu w-100 text-center">
+              <li *ngFor="let genre of genres">
+                <a class="dropdown-item"
+                  [routerLink]="['/list-filmaut']"
+                  [queryParams]="{ genreId: genre.id_genre }">
+                  {{ genre.nama_genre }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    
+        <!-- Pilih Tahun -->
+        <div class="col-md-3 col-sm-4">
+          <div class="dropdown">
+            <button class="btn w-100 custom-btn" type="button" data-bs-toggle="dropdown">
+              Pilih Tahun
+            </button>
+            <ul class="dropdown-menu w-100 text-center">
+              <li *ngFor="let year of years">
+                <a class="dropdown-item"
+                  [routerLink]="['/list-filmaut']"
+                  [queryParams]="{ year: year.tahun_rilis }">
+                  {{ year.tahun_rilis }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    
+        <!-- Pilih Negara -->
+        <div class="col-md-3 col-sm-4">
+          <div class="dropdown">
+            <button class="btn w-100 custom-btn" type="button" data-bs-toggle="dropdown">
+              Pilih Negara
+            </button>
+            <ul class="dropdown-menu w-100 text-center">
+              <li *ngFor="let country of countries">
+                <a class="dropdown-item"
+                  [routerLink]="['/list-filmaut']"
+                  [queryParams]="{ countryId: country.id_negara }">
+                  {{ country.nama_negara }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <div class="container mt-2">
+      <h2 class="custom-title">Film Terpopuler</h2>
+    
+      <div id="popularFilmsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <!-- Loop untuk menampilkan film -->
+          <div class="carousel-item" *ngFor="let filmGroup of groupedPopularFilms; let i = index" [class.active]="i === 0">
+            <div class="row">
+              <div class="col-md-6 col-lg-4" *ngFor="let film of filmGroup">
+                <a class="film-card card text-decoration-none" [routerLink]="['/detail-filmaut', film.id_film]">
+                  <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
+                  <div class="card-body">
+                    <h5 class="card-title">{{ film.nama_film }}</h5>
+                    <p class="card-text">{{ film.deskripsi | slice : 0 : 100 }}...</p>
+                    <div class="rating-container">
+                      <span class="rating-badge">⭐{{ film.rating }}</span> 
+                      <span class="film-duration"> {{ convertToHours(film.durasi) }}</span>
+                    </div>                                       
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+    
+          <!-- Tambahkan "Lihat Selengkapnya" di dalam carousel -->
+          <div class="carousel-item">
+            <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+              <a class="btn custom-btn2 btn-lg" [routerLink]="['/list-filmaut']" [queryParams]="{ section: 'popular' }">
+                Lihat Selengkapnya >
+              </a>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Tombol Navigasi -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#popularFilmsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#popularFilmsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    
+    
+    <div class="container my-5">
+      <h2 class="custom-title">Apa Kata Mereka?</h2>
+      <div class="row g-4">
+        <div class="col-md-4" *ngFor="let comment of latestComments">
+          <div class="card comment-card shadow-sm border-0">
+            <div class="card-body">
+              <blockquote class="blockquote mb-0">
+                <i class="bi bi-chat-quote fs-2 text-primary"></i>
+                <p class="fw-bold">"{{ comment.komentar }}"</p>
+                <footer class="blockquote-footer text-muted">
+                  {{ comment.username }}
+                </footer>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container my-5">
+      <h2 class="custom-title">Top Reviewer</h2>
+      <div class="row g-4">
+        <div class="col-md-4" *ngFor="let reviewer of topReviewers">
+          <div class="card reviewer-card text-center shadow-sm h-100 border-0">
+            <div class="card-body">
+              <img 
+                [src]="reviewer.profile" 
+                class="rounded-circle mx-auto d-block border border-3 border-primary" 
+                width="80" height="80"
+                style="object-fit: cover;"
+              />
+              <h5 class="mt-3">{{ reviewer.username }}</h5>
+              <p class="text-muted"><i class="bi bi-star-fill text-warning"></i> {{ reviewer.review_count }} review</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Statistik Singkat -->
+    <div class="container my-5 text-center">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <h3>🎬 <span class="fw-bold">{{ totalMovies }}</span>+ Film</h3>
+        </div>
+        <div class="col-md-4">
+          <h3>⭐ <span class="fw-bold">{{ totalReviews }}</span>+ Review</h3>
+        </div>
+        <div class="col-md-4">
+          <h3>📢 <span class="fw-bold">{{ totalUsers }}</span>+ Pengguna</h3>
+        </div>
+      </div>
+    </div>
+
+    <footer class="kaki bg-dark text-white text-center py-4 mt-5 w-100">
+      <p>&copy; 2025 Moviers. All rights reserved.</p>
+      <p>
+        <a href="#" class="text-white text-decoration-none me-3">Kebijakan Privasi</a>
+        <a href="#" class="text-white text-decoration-none">Syarat dan Ketentuan</a>
+      </p>
+    </footer>
+    
+    
+    

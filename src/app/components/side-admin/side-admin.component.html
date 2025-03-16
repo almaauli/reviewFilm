@@ -1,0 +1,63 @@
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading">Core</div>
+                <a class="nav-link" routerLink="/admin-dashboard">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    Dashboard
+                </a>
+                <div class="sb-sidenav-menu-heading">Interface</div>
+                <a class="nav-link collapsed" routerLink="#" data-bs-toggle="collapse" data-bs-target="#collapsePages1" aria-expanded="false" aria-controls="collapsePages1">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    Pages
+                    <div class="sb-sidenav-collapse-arrow">
+                        <i class="fas fa-angle-down"></i>
+                    </div>
+                </a>
+                <div class="collapse" id="collapsePages1" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                        <a class="nav-link" routerLink="/login">Login</a>
+                        <a class="nav-link" routerLink="/register">Register</a>
+                        <a class="nav-link" routerLink="/lupa">Lupa Kata Sandi</a>
+                        <a class="nav-link" routerLink="/anon">Halaman Website</a>
+                    </nav>
+                </div>
+
+                <div class="sb-sidenav-menu-heading">Addons</div>
+                <a class="nav-link" routerLink="/admin-tfilm">
+                    <div class="sb-nav-link-icon"><i class="fas fa-film"></i></div>
+                    Film
+                </a>
+                <a class="nav-link" routerLink="/admin-tgenre">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                    Genre
+                </a>
+                <a class="nav-link" routerLink="/admin-tcoment">
+                    <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
+                    Comment
+                </a>
+                <a class="nav-link" routerLink="/admin-tnegara">
+                    <div class="sb-nav-link-icon"><i class="fas fa-globe"></i></div>
+                    Country
+                </a>
+                <a class="nav-link" routerLink="/admin-ttahun">
+                    <div class="sb-nav-link-icon"><i class="fas fa-calendar-alt"></i></div>
+                    Year
+                </a>
+                <a class="nav-link" routerLink="/admin-tuser">
+                    <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                    User
+                </a>
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Logged in as:</div>
+            {{ loggedInUser }}
+        </div>        
+    </nav>
+</div>

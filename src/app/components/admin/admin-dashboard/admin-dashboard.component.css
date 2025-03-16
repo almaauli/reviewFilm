@@ -1,0 +1,98 @@
+:root {
+  --primary: #0d6efd;
+  --secondary: #6c757d;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --border-color: #dee2e6;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: var(--light);
+  color: var(--dark);
+  margin: 0;
+}
+
+h2 {
+  color: black;
+}
+
+#navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #343a40;
+}
+
+#layoutSidenav {
+  display: flex;
+  flex-direction: row;
+}
+
+#sidenav {
+  width: 250px;
+  position: fixed;
+  left: 0;
+  top: 56px; /* Sesuaikan dengan tinggi navbar */
+  bottom: 0;
+  background-color: #212529;
+}
+
+#layoutSidenav_content {
+  margin-left: 250px;
+  padding: 20px;
+  width: calc(100% - 250px);
+}
+
+.container-fluid {
+  padding: 20px;
+}
+
+.card {
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for transform and shadow */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Slightly lift the card */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-footer {
+  padding: 10px;
+}
+
+footer {
+  background-color: var(--light);
+  padding: 20px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+footer .text-muted {
+  color: var(--secondary);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#datatablesSimple {
+  width: 100%; 
+  border-collapse: collapse; 
+}
+
+#datatablesSimple th, 
+#datatablesSimple td {
+  padding: 10px;
+  text-align: left; 
+  border-bottom: 2px solid #ddd; 
+}

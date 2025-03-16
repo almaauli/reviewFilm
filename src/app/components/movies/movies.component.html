@@ -1,0 +1,42 @@
+<app-navbar *ngIf="!isAuthenticated"></app-navbar>
+<app-navbar-subs *ngIf="isAuthenticated && userRole === 'user'"></app-navbar-subs>
+<app-nav-author *ngIf="isAuthenticated && userRole === 'author'"></app-nav-author>
+
+<!DOCTYPE html>
+<html lang="id">
+<body>
+<div class="container mt-4" *ngIf="movies.length > 0; else noMovies">
+    <h2 class="text-center mb-4"> Movies</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4" *ngFor="let movie of movies">
+        <div class="film-card card d-flex flex-column h-100">
+          <img [src]="getImagePath(movie.gambar_film)" class="card-img-top" [alt]="movie.nama_film" />
+          <span class="rating-badge">⭐ {{ movie.rating }}</span>
+          <div class="card-body">
+            <h5 class="card-title">{{ movie.nama_film }}</h5>
+            <p class="card-text">
+              {{ movie.deskripsi | slice : 0 : 80 }}...
+            </p>
+            <a [routerLink]="getDetailRoute(movie.id_film)" class="btn btn-dark btn-sm">
+              Lihat Detail
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #noMovies>
+    <p class="text-center">Tidak ada film tersedia.</p>
+  </ng-template>
+  <button type="button" class="btn btn-secondary mt-3 w-auto" (click)="goBack()">Batal</button>
+  <footer class="kaki bg-dark text-white text-center py-4 mt-5 w-100">
+    <p>&copy; 2025 Moviers. All rights reserved.</p>
+    <p>
+      <a href="#" class="text-white text-decoration-none me-3">Kebijakan Privasi</a>
+      <a href="#" class="text-white text-decoration-none">Syarat dan Ketentuan</a>
+    </p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<app-nav-author *ngIf="isAuthenticated"></app-nav-author>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Films</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <h2 class="text-center my-4">My Films</h2>
+
+    <!-- Template for when no films are present -->
+    <ng-template #emptyFilms>
+      <div class="text-center my-5 p-4 border rounded-4 shadow-sm bg-light">
+        <h4 class="text-secondary">Belum Ada Film 😞</h4>
+        <p class="text-muted">Tambahkan film favoritmu agar bisa ditampilkan di sini.</p>
+       
+      </div>
+    </ng-template>
+
+    <div class="row" *ngIf="films.length > 0; else emptyFilms">
+      <div class="col-md-4 col-sm-6 mb-4" *ngFor="let film of films">
+        <div class="card film-card">
+          <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
+          <div class="card-body">
+            <h5 class="card-title">{{ film.nama_film }}</h5>
+            <p class="card-text">
+              <strong>Genre:</strong> {{ film.nama_genre }}<br>
+              <strong>Tahun:</strong> {{ film.tahun_rilis }}<br>
+              <strong>Author:</strong> {{ film.author_name }}
+            </p>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-warning btn-sm" (click)="openEditFilmModal(film)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-danger btn-sm" (click)="deleteFilm(film.id_film)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tombol Tambah Film -->
+  <button class="fab-btn" (click)="openAddFilmModal()">
+    <i class="fas fa-plus"></i>
+  </button>
+  
+  <!-- Modal Tambah/Edit Film -->
+  <div class="modal fade" id="filmModal" tabindex="-1" aria-labelledby="filmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ isEdit ? 'Edit Film' : 'Tambah Film' }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="filmForm" (ngSubmit)="saveFilm()">
+            <div class="mb-3">
+              <label for="namaFilm" class="form-label">Nama Film</label>
+              <input type="text" id="namaFilm" class="form-control" formControlName="nama_film">
+            </div>
+            <div class="mb-3">
+              <label for="trailer" class="form-label">Trailer</label>
+              <input type="text" id="trailerUrl" class="form-control" formControlName="trailer">
+              <input type="file" class="form-control mt-2" (change)="onFileSelected($event, 'trailer')">
+            
+              <!-- Preview YouTube Trailer -->
+              <div *ngIf="filmForm.value.trailer">
+                <iframe 
+                  width="100%" height="315" 
+                  [src]="getEmbedUrl(filmForm.value.trailer) | safeUrl"
+                  frameborder="0" allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="gambarFilm" class="form-label">Gambar Film</label>
+              <input type="text" id="gambarFilmUrl" class="form-control" formControlName="gambar_film">
+              <input type="file" class="form-control mt-2" (change)="onFileSelected($event, 'gambar_film')">
+            
+              <!-- Preview Gambar -->
+              <div *ngIf="filmForm.value.gambar_film">
+                <img [src]="filmForm.value.gambar_film" alt="Gambar Film" class="img-fluid mt-2" style="max-width: 200px;">
+              </div>
+            </div>
+                        
+            
+            <div class="mb-3">
+              <label for="deskripsi" class="form-label">Deskripsi</label>
+              <textarea id="deskripsi" class="form-control" formControlName="deskripsi"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="genre" class="form-label">Genre</label>
+              <select id="genre" class="form-control" formControlName="genre">
+                <option *ngFor="let g of genre" [value]="g.id_genre">{{ g.nama_genre }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="tahun" class="form-label">Tahun</label>
+              <select id="tahun" class="form-control" formControlName="tahun">
+                <option *ngFor="let t of tahun" [value]="t.id_tahun">{{ t.tahun_rilis }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="negara" class="form-label">Negara</label>
+              <select id="negara" class="form-control" formControlName="negara">
+                <option *ngFor="let n of negara" [value]="n.id_negara">{{ n.nama_negara }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="rating" class="form-label">Rating</label>
+              <input type="number" step="0.1" id="rating" class="form-control" formControlName="rating">
+            </div>
+            <div class="mb-3">
+              <label for="durasi" class="form-label">Durasi (menit)</label>
+              <input type="number" id="durasi" class="form-control" formControlName="durasi">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update Film' : 'Tambah Film' }}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="kaki bg-dark text-white text-center py-4 mt-5 w-100">
+    <p>&copy; 2025 Moviers. All rights reserved.</p>
+    <p>
+      <a href="#" class="text-white text-decoration-none me-3">Kebijakan Privasi</a>
+      <a href="#" class="text-white text-decoration-none">Syarat dan Ketentuan</a>
+    </p>
+  </footer>
+  
+</body>
+</html>

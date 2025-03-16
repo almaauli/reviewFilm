@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+      <div class="navbar-brand fs-3">
+        <i class="fas fa-film me-2"></i>
+        MovieReviews
+      </div>
+  
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/aut-home" routerLinkActive="active">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/movies">Movies</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/aut-watchlist" routerLinkActive="active">Watchlist</a>
+          </li>        
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/myfilm" routerLinkActive="active">My Film</a>
+          </li>   
+          
+          <!-- Profil & Dropdown Logout -->
+          <li class="nav-itemp dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img [src]="getImagePath(userProfileImage)" class="rounded-circle me-2" [alt]="userProfileImage" />
+              {{ userName }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" routerLink="/aut-profile">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" (click)="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin User Management</title>
+</head>
+<body>
+  <div id="navbar" *ngIf="isAdmin">
+    <app-nav-admin></app-nav-admin>
+  </div>
+  
+  <div id="layoutSidenav" *ngIf="isAdmin">
+    <div id="sidenav">
+      <app-side-admin></app-side-admin>
+    </div>
+  </div>
+    <div class="container my-4">
+      <h2>Tabel User</h2>
+      <ol class="breadcrumb mb-4">
+        <a routerLink="/admin-dashboard" class="breadcrumb-item">Dashboard</a>
+        <li class="breadcrumb-item active">Tabel User</li>
+      </ol>
+      <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#userModal">
+        Tambah User
+      </button>
+    
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Usia</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Profile</th>
+            <th>Watchlist</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of userList">
+            <td>{{ user.id_user }}</td>
+            <td>{{ user.nama }}</td>
+            <td>{{ user.usia }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+            <td> <td>
+              <img [src]="getImagePath(user.profile)" alt="Profile Picture" class="img-fluid" />
+            </td>
+            <td>{{ user.watchlist }}</td>
+            <td>{{ user.created_at }}</td>
+            <td>{{ user.updated_at }}</td>
+            <td>
+              <button class="btn btn-warning btn-sm me-1" (click)="editUser(user)">Edit</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id_user)">Hapus</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    
+      <!-- Modal User -->
+      <div class="modal fade" id="userModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ isEditMode ? 'Edit User' : 'Tambah User' }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="userForm" (ngSubmit)="isEditMode ? updateUser() : onSubmit()">
+                <div class="mb-3">
+                  <label>Nama</label>
+                  <input type="text" class="form-control" formControlName="nama" required />
+                </div>
+                <div class="mb-3">
+                  <label>Usia</label>
+                  <input type="number" class="form-control" formControlName="usia" required />
+                </div>
+                <div class="mb-3">
+                  <label>Email</label>
+                  <input type="email" class="form-control" formControlName="email" required />
+                </div>
+                <div class="mb-3">
+                  <label>Password</label>
+                  <input type="password" class="form-control" formControlName="password" [required]="!isEditMode" />
+                </div>
+                
+                <div class="mb-3">
+                  <label>Role</label>
+                  <select class="form-control" formControlName="role">
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                    <option value="author">Author</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="profile" class="form-label">Profile</label>
+                  <input type="text" id="profileUrl" class="form-control" formControlName="profile">
+                  <input type="file" class="form-control mt-2" (change)="onFileSelected($event, 'profile')">
+                
+                  <!-- Preview Gambar -->
+                  <div *ngIf="userForm.value.profile">
+                    <img [src]="userForm.value.profile" alt="profile" class="img-fluid mt-2" style="max-width: 200px;">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label>Watchlist</label>
+                  <input type="text" class="form-control" formControlName="watchlist" />
+                </div>                
+                <button type="submit" class="btn btn-primary">
+                  {{ isEditMode ? "Perbarui" : "Simpan" }}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

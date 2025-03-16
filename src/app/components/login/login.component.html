@@ -1,0 +1,49 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-lg-5 col-md-7 col-sm-9">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+      <div class="card-body p-4">
+        <h3 class="text-center fw-bold mb-3">Welcome Back</h3>
+        <p class="text-center text-muted mb-4">Sign in to continue</p>
+        <form (ngSubmit)="login()" #loginForm="ngForm">
+          <div class="form-floating mb-3">
+            <input
+              type="email"
+              class="form-control rounded-3"
+              id="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="Email"
+              required
+            />
+            <label for="email">Email</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="password"
+              class="form-control rounded-3"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="Password"
+              required
+            />
+            <label for="password">Password</label>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary w-100 py-2 rounded-3 shadow-sm"
+            [disabled]="!loginForm.valid"
+          >
+            Sign In
+          </button>
+        </form>
+        <div class="text-center mt-3">
+          <p class="mb-1">Don't have an account? <a routerLink="/register" class="text-decoration-none">Register</a></p>
+          <button class="btn text text-muted text-decoration-none" (click)="goBack()">Cancel</button>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
