@@ -366,39 +366,38 @@ app.post("/films", (req, res) => {
     negara,
     rating,
     durasi,
-    id_author, // Tambahkan id_author dari request body
+    id_author
   } = req.body;
 
-  if (!id_author) {
-    return res.status(400).json({ error: "id_author diperlukan" });
+  if (!nama_film || !trailer || !gambar_film || !deskripsi || !genre || !tahun || !negara || !rating || !durasi || !id_author) {
+    return res.status(400).json({ error: "Semua field harus diisi" });
   }
 
-  const sql = `INSERT INTO film (nama_film, trailer, gambar_film, deskripsi, genre, tahun, negara, rating, durasi, id_author, created_at, updated_at) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`;
+  const query = `
+    INSERT INTO film (nama_film, trailer, gambar_film, deskripsi, genre, tahun, negara, rating, durasi, id_author, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+  `;
 
-  db.query(
-    sql,
-    [
-      nama_film,
-      trailer,
-      gambar_film,
-      deskripsi,
-      genre,
-      tahun,
-      negara,
-      rating,
-      durasi,
-      id_author, // Tambahkan id_author dalam query
-    ],
-    (err, result) => {
-      if (err) {
-        console.error("Error inserting film:", err);
-        return res.status(500).json({ error: err.message });
-      }
-      res.json({ message: "Film berhasil ditambahkan", id: result.insertId });
+  db.query(query, [
+    nama_film,
+    trailer,
+    gambar_film,
+    deskripsi,
+    genre,
+    tahun,
+    negara,
+    rating,
+    durasi,
+    id_author
+  ], (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: err.message });
     }
-  );
+    res.json({ message: "Film berhasil ditambahkan", id: result.insertId });
+  });
 });
+
 app.put("/films/:id", (req, res) => {
   const { id } = req.params;
   const {
@@ -886,40 +885,52 @@ app.get('/profile/:id', verifyToken, (req, res) => {
 
 // Endpoint: Update user profile
 app.put("/profile/:id", upload.single("profile"), (req, res) => {
+  console.log("Request update profile:", req.body);
+  console.log("User ID:", req.params.id);
+
   const { id } = req.params;
-  const { nama, usia, email, password, role, watchlist } = req.body;
+  const { nama, usia, email, role, watchlist } = req.body;
   const profile = req.file ? req.file.filename : null;
 
+  // Pastikan nama, email, dan role tidak kosong
   if (!nama || !email || !role) {
     return res.status(400).json({ error: "Nama, email, dan role harus diisi" });
   }
 
-  db.query("SELECT password FROM users WHERE id_user = ?", [id], (err, result) => {
+  // Jika email diubah, pastikan email belum digunakan oleh user lain
+  db.query("SELECT id_user FROM users WHERE email = ? AND id_user != ?", [email, id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
-    if (result.length === 0) return res.status(404).json({ error: "User not found" });
 
-    const currentPassword = result[0].password;
-
-    let newPassword = currentPassword;
-    if (password) {
-      newPassword = bcrypt.hashSync(password, 10);
+    if (result.length > 0) {
+      return res.status(400).json({ error: "Email sudah digunakan oleh pengguna lain" });
     }
 
-    const updateQuery = `
-      UPDATE users 
-      SET nama = ?, usia = ?, email = ?, password = ?, role = ?, watchlist = ?, ${profile ? "profile = ?" : ""} updated_at = NOW() 
+    // Jika email valid, lanjutkan pembaruan profil
+    const sql = `
+      UPDATE users SET 
+      nama = ?, usia = ?, email = ?, role = ?, profile = ?, 
+      watchlist = ?, updated_at = NOW() 
       WHERE id_user = ?`;
 
-    const queryParams = [nama, Number(usia) || null, email, newPassword, role, watchlist || null];
-    if (profile) queryParams.push(profile);
-    queryParams.push(id);
+    const values = [nama, usia, email, role, profile || null, watchlist || null, id];
 
-    db.query(updateQuery, queryParams, (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: "User updated successfully" });
+    console.log("SQL Query:", sql);
+    console.log("Values:", values);
+
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("Error saat update profile:", err);
+        return res.status(500).json({ error: err.message });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "User tidak ditemukan" });
+      }
+      res.json({ message: "Profile berhasil diperbarui" });
     });
   });
 });
+
+
 
 //author
 app.get("/films/author/:id", (req, res) => {

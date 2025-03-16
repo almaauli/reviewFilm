@@ -31,4 +31,9 @@ export class ProfileService {
   getFilmImagePath(imagePath: string): string {
     return `http://localhost:3000/${imagePath}`;
   } 
+
+  uploadFile(formData: FormData) {
+    console.log("Form data sebelum dikirim:", formData);
+    return this.http.post<any>('http://localhost:3000/api/upload', formData);
+  }
 }

@@ -141,7 +141,6 @@ form {
   width: 100%; /* Make the image fill up to the max-width */
 }
 
-
 @media (max-width: 768px) {
   #sidenav {
     width: 200px;

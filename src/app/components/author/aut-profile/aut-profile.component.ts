@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfileService } from '../../../services/profile.service';
 import Swal from 'sweetalert2';
-import { SubsProfileComponent } from '../../subs/subs-profile/subs-profile.component';
 
 @Component({
   selector: 'app-aut-profile',
@@ -17,11 +16,11 @@ export class AutProfileComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private profileService: ProfileService) {
     this.profileForm = this.fb.group({
-      nama: [''],
-      usia: [''],
-      email: [''],
-      password: [''],
-      role: [''],
+      nama: ['', Validators.required],
+      usia: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Validasi usia hanya angka
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.minLength(6)],
+      role: ['author', Validators.required],
       watchlist: [''],
       profile: [null]
     });
@@ -29,13 +28,13 @@ export class AutProfileComponent implements OnInit {
 
   ngOnInit() {
     const storedUserId = localStorage.getItem('userId');
-    const userRole = localStorage.getItem('role');
+    const userRole = localStorage.getItem('role'); // Get role for validation
     
-    console.log('Stored User ID:', storedUserId); // Debugging
     if (storedUserId && userRole) {
       this.userId = parseInt(storedUserId, 10);
       console.log('User ID from localStorage:', this.userId, 'Role:', userRole); // Debugging
-      
+
+      // Verifikasi jika user yang login sesuai dengan role yang diharapkan untuk komponen ini
       if (this.isValidUserRole(userRole)) {
         this.loadUserProfile();
       } else {
@@ -45,14 +44,14 @@ export class AutProfileComponent implements OnInit {
       Swal.fire('Error', 'ID Pengguna atau Role tidak ditemukan di localStorage!', 'error');
     }
   }
-  
+
   isValidUserRole(role: string): boolean {
-    // Verifikasi apakah role sesuai dengan komponen ini (misalnya 'author' atau 'subscriber')
-    return role === 'author';  // Karena kita hanya ingin memvalidasi role 'author' di komponen ini
+    // Verifikasi jika role sesuai (misalnya 'author' untuk komponen ini)
+    return role === 'author'; // Asumsikan komponen ini untuk role 'author'
   }
-  
+
   loadUserProfile() {
-    console.log('Requesting user profile for ID:', this.userId); // Debugging
+    console.log('Requesting user profile for ID:', this.userId);
     this.profileService.getUserById(this.userId!).subscribe(user => {
       console.log('Fetched user data:', user); // Debugging
       if (user) {
@@ -67,8 +66,8 @@ export class AutProfileComponent implements OnInit {
         this.imagePreview = this.getImagePath(user.profile);
       }
     });
-  }  
-  
+  }
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -81,45 +80,61 @@ export class AutProfileComponent implements OnInit {
     }
   }
 
-   onSubmit() {
-      Swal.fire({
-        title: 'Konfirmasi',
-        text: 'Apakah Anda yakin ingin memperbarui profil?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Update!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const formData = new FormData();
-          Object.entries(this.profileForm.value).forEach(([key, value]) => {
-            if (value !== null && value !== undefined && value !== '') {
-              if (key === 'profile' && value instanceof File) {
-                formData.append(key, value);
-              } else {
-                formData.append(key, value.toString());
-              }
-            }
-          });
-  
-          this.profileService.updateUser(this.userId!, formData).subscribe(
-            response => {
-              Swal.fire('Berhasil!', 'Profil berhasil diperbarui.', 'success');
-            },
-            error => {
-              Swal.fire('Error!', 'Terjadi kesalahan saat memperbarui profil.', 'error');
-            }
-          );
-        }
-      });
+  onSubmit() {
+    if (this.profileForm.invalid) {
+      Swal.fire('Error!', 'Please fill in all the fields correctly.', 'error');
+      return;
     }
 
+    // Debugging: Cek nilai form sebelum dikirimkan
+    console.log('Form Data:', this.profileForm.value);
+
+    Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Apakah Anda yakin ingin memperbarui profil?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Update!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const formData = new FormData();
+
+        // Pastikan hanya mengirim field yang diperlukan
+        const { watchlist, ...otherFields } = this.profileForm.value;
+
+        // Loop untuk menambahkan data yang diperlukan ke formData
+        Object.entries(otherFields).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && value !== '') {
+            if (key === 'profile' && value instanceof File) {
+              formData.append(key, value); // Menambahkan file jika ada
+            } else {
+              formData.append(key, value.toString()); // Menambahkan field lainnya
+            }
+          }
+        });
+
+        // Kirim data ke backend untuk update profil
+        this.profileService.updateUser(this.userId!, formData).subscribe(
+          response => {
+            console.log('Server Response:', response);
+            Swal.fire('Berhasil!', 'Profil berhasil diperbarui.', 'success');
+          },
+          error => {
+            console.error('Error:', error);
+            Swal.fire('Error!', 'Terjadi kesalahan saat memperbarui profil.', 'error');
+          }
+        );
+      }
+    });
+  }
+
   getImagePath(imagePath: string): string {
-    if (!imagePath) return 'assets/default-image.jpg'; // Gambar default jika kosong
+    if (!imagePath) return 'assets/default-image.jpg'; // Gambar default jika path kosong
     if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
-      return imagePath;
+      return imagePath; // Jika path sudah URL, kembalikan URL tersebut
     }
-    return this.profileService.getFilmImagePath(imagePath);
+    return this.profileService.getFilmImagePath(imagePath); // Menggunakan path dari service
   }
 
   goBack() {

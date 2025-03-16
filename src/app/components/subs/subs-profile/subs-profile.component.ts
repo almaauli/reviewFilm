@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from '../../../services/profile.service';
 import Swal from 'sweetalert2';
-import { AutProfileComponent } from '../../author/aut-profile/aut-profile.component';
 
 @Component({
   selector: 'app-subs-profile',
@@ -30,7 +29,7 @@ export class SubsProfileComponent implements OnInit {
   ngOnInit() {
     const storedUserId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('role');  // Ambil role untuk verifikasi
-  
+    
     if (storedUserId && userRole) {
       this.userId = parseInt(storedUserId, 10);
       console.log('User ID from localStorage:', this.userId, 'Role:', userRole); // Debugging
@@ -48,27 +47,26 @@ export class SubsProfileComponent implements OnInit {
   
   isValidUserRole(role: string): boolean {
     // Verifikasi apakah role sesuai dengan komponen ini (misalnya 'author' atau 'subscriber')
-    return (this instanceof AutProfileComponent && role === 'author') || 
-           (this instanceof SubsProfileComponent && role === 'subscriber');
+    return role === 'user';  // Karena kita hanya ingin memvalidasi role 'subscriber' di komponen ini
   }
-  
-loadUserProfile() {
-  console.log('Requesting user profile for ID:', this.userId);
-  this.profileService.getUserById(this.userId!).subscribe(user => {
-    console.log('Fetched user data:', user); // Debugging
-    if (user) {
-      this.user = user;
-      this.profileForm.patchValue({
-        nama: user.nama,
-        usia: user.usia,
-        email: user.email,
-        role: user.role,
-        watchlist: user.watchlist || ''
-      });
-      this.imagePreview = this.getImagePath(user.profile);
-    }
-  });
-}
+
+  loadUserProfile() {
+    console.log('Requesting user profile for ID:', this.userId);
+    this.profileService.getUserById(this.userId!).subscribe(user => {
+      console.log('Fetched user data:', user); // Debugging
+      if (user) {
+        this.user = user;
+        this.profileForm.patchValue({
+          nama: user.nama,
+          usia: user.usia,
+          email: user.email,
+          role: user.role,
+          watchlist: user.watchlist || ''
+        });
+        this.imagePreview = this.getImagePath(user.profile);
+      }
+    });
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];

@@ -21,7 +21,7 @@
                   <strong>Durasi:</strong> {{ convertToHours(film.durasi) }}
                 </p>
                 <p><strong>Rating:</strong> ⭐ {{ film.rating }}</p>
-                <p><strong>Deskripsi:</strong> {{ film.deskripsi }}</p>
+                <p class="justify-text"><strong>Deskripsi:</strong> {{ film.deskripsi }}</p>
                 <button
                   class="btn btn-outline-secondary w-100 mt-2"
                   (click)="addToWatchlist(film.id_film)"

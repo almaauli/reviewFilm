@@ -38,6 +38,10 @@ video {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
+.justify-text {
+  text-align: justify;
+}
+
 
 .kaki {
   background-color: #000;
