@@ -887,8 +887,7 @@ app.get('/profile/:id', verifyToken, (req, res) => {
 app.put("/profile/:id", upload.single("profile"), (req, res) => {
   console.log("Request update profile:", req.body);
   console.log("User ID:", req.params.id);
-
-  const { id } = req.params;
+  const id = parseInt(req.params.id, 10);
   const { nama, usia, email, role, watchlist } = req.body;
   const profile = req.file ? req.file.filename : null;
 
