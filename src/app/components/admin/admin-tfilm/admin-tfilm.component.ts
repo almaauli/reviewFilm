@@ -201,29 +201,28 @@ export class AdminTfilmComponent implements OnInit {
     }
   
     getVideoPath(videoPath: string): string {
+      console.log("Mendapatkan path video:", videoPath); // Log untuk memastikan path video
       if (!videoPath) return '';
-    
-      // Jika sudah merupakan URL lengkap, langsung kembalikan
       if (videoPath.startsWith('http')) {
         return videoPath;
       }
-    
-      // Jika hanya nama file, tambahkan path backend
       return `http://localhost:3000/videos/${videoPath}`;
     }
+    
     onFileSelected(event: any, field: string) {
       const file = event.target.files[0];
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
-    
+      
         this.filmService.uploadFile(formData).subscribe((response: any) => {
           console.log("Response dari upload:", response); // Cek respons backend
           if (response.url) {
             this.filmForm.patchValue({ gambar_film: response.url });
             console.log("URL diset ke form:", this.filmForm.value.gambar_film); // Debugging
           }
-        });        
+        });
       }
     }
+    
 }

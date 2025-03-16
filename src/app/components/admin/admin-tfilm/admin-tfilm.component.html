@@ -59,10 +59,11 @@
                   width="150" height="100" frameborder="0" allowfullscreen>
                 </iframe>
               
-                <video *ngIf="!isYouTubeVideo(film.trailer)" 
-                  width="150" height="100" controls>
+                <video *ngIf="!isYouTubeVideo(film.trailer)" width="150" height="100" controls>
                   <source [src]="getVideoPath(film.trailer)" type="video/mp4">
+                  Your browser does not support the video tag.
                 </video>
+                
               </td>
               <td>
                 <img [src]="getImagePath(film.gambar_film)" alt="Gambar Film" />
@@ -106,11 +107,17 @@
                 
                   <!-- Preview YouTube Trailer -->
                   <div *ngIf="filmForm.value.trailer">
-                    <iframe 
-                      width="100%" height="315" 
-                      [src]="getEmbedUrl(filmForm.value.trailer) | safeUrl"
-                      frameborder="0" allowfullscreen>
+                    <iframe *ngIf="isYouTubeVideo(filmForm.value.trailer)" 
+                            width="100%" height="315" 
+                            [src]="getEmbedUrl(filmForm.value.trailer) | safeUrl"
+                            frameborder="0" allowfullscreen>
                     </iframe>
+
+                    <!-- Cek apakah trailer adalah video lokal -->
+                    <video *ngIf="!isYouTubeVideo(filmForm.value.trailer)" width="100%" height="315" controls>
+                      <source [src]="getVideoPath(filmForm.value.trailer)" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
                   </div>
                 </div>
                 <div class="mb-3">

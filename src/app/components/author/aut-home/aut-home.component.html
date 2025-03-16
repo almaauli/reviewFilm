@@ -66,54 +66,73 @@
     
 
     <div class="container my-5">
-      <div class="row d-flex justify-content-center gap-3"> <!-- Flexbox & spacing -->
+      <div class="row d-flex justify-content-center gap-3">
+        <!-- Flexbox & spacing -->
         <!-- Pilih Genre -->
         <div class="col-md-3 col-sm-4">
           <div class="dropdown">
-            <button class="btn w-100 custom-btn" type="button" data-bs-toggle="dropdown">
-              Pilih Genre
+            <button
+              class="btn w-100 custom-btn"
+              type="button"
+              data-bs-toggle="dropdown"
+            >
+              Pilih Genre <i class="bi bi-caret-down-fill"></i>
             </button>
             <ul class="dropdown-menu w-100 text-center">
               <li *ngFor="let genre of genres">
-                <a class="dropdown-item"
+                <a
+                  class="dropdown-item"
                   [routerLink]="['/list-filmaut']"
-                  [queryParams]="{ genreId: genre.id_genre }">
+                  [queryParams]="{ genreId: genre.id_genre }"
+                >
                   {{ genre.nama_genre }}
                 </a>
               </li>
             </ul>
           </div>
         </div>
-    
+  
         <!-- Pilih Tahun -->
         <div class="col-md-3 col-sm-4">
           <div class="dropdown">
-            <button class="btn w-100 custom-btn" type="button" data-bs-toggle="dropdown">
-              Pilih Tahun
+            <button
+              class="btn w-100 custom-btn"
+              type="button"
+              data-bs-toggle="dropdown"
+            >
+              Pilih Tahun <i class="bi bi-caret-down-fill"></i>
             </button>
             <ul class="dropdown-menu w-100 text-center">
               <li *ngFor="let year of years">
-                <a class="dropdown-item"
+                <a
+                  class="dropdown-item"
                   [routerLink]="['/list-filmaut']"
-                  [queryParams]="{ year: year.tahun_rilis }">
+                  [queryParams]="{ year: year.tahun_rilis }"
+                >
                   {{ year.tahun_rilis }}
                 </a>
               </li>
             </ul>
           </div>
         </div>
-    
+  
         <!-- Pilih Negara -->
         <div class="col-md-3 col-sm-4">
           <div class="dropdown">
-            <button class="btn w-100 custom-btn" type="button" data-bs-toggle="dropdown">
-              Pilih Negara
+            <button
+              class="btn w-100 custom-btn"
+              type="button"
+              data-bs-toggle="dropdown"
+            >
+              Pilih Negara <i class="bi bi-caret-down-fill"></i>
             </button>
             <ul class="dropdown-menu w-100 text-center">
               <li *ngFor="let country of countries">
-                <a class="dropdown-item"
+                <a
+                  class="dropdown-item"
                   [routerLink]="['/list-filmaut']"
-                  [queryParams]="{ countryId: country.id_negara }">
+                  [queryParams]="{ countryId: country.id_negara }"
+                >
                   {{ country.nama_negara }}
                 </a>
               </li>
@@ -122,7 +141,6 @@
         </div>
       </div>
     </div>
-    
 
     <div class="container mt-2">
       <h2 class="custom-title">Film Terpopuler</h2>

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from '../../../services/profile.service';
-import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { SubsProfileComponent } from '../../subs/subs-profile/subs-profile.component';
 
 @Component({
   selector: 'app-aut-profile',
@@ -11,59 +12,49 @@ import { Router } from '@angular/router';
 export class AutProfileComponent implements OnInit {
   profileForm: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
-  userId: number | null = null;
+  userId: number | undefined = undefined; // Initialized with undefined
   user: any;
 
-  constructor(
-    private fb: FormBuilder, 
-    private profileService: ProfileService,
-    private router: Router
-  ) {
+  constructor(private fb: FormBuilder, private profileService: ProfileService) {
     this.profileForm = this.fb.group({
       nama: [''],
       usia: [''],
       email: [''],
       password: [''],
-      profile: [null],
       role: [''],
-      watchlist: ['']
+      watchlist: [''],
+      profile: [null]
     });
   }
 
   ngOnInit() {
-    this.getUserIdFromToken();
-  }
-
-  getUserIdFromToken() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken = this.decodeToken(token);
-      if (decodedToken && decodedToken.id_user) {
-        this.userId = decodedToken.id_user;
+    const storedUserId = localStorage.getItem('userId');
+    const userRole = localStorage.getItem('role');
+    
+    console.log('Stored User ID:', storedUserId); // Debugging
+    if (storedUserId && userRole) {
+      this.userId = parseInt(storedUserId, 10);
+      console.log('User ID from localStorage:', this.userId, 'Role:', userRole); // Debugging
+      
+      if (this.isValidUserRole(userRole)) {
         this.loadUserProfile();
       } else {
-        console.error("Token tidak valid atau tidak berisi id_user!");
-        this.router.navigate(['/login']); // Redirect ke login jika token tidak valid
+        Swal.fire('Error', 'Role pengguna tidak sesuai!', 'error');
       }
     } else {
-      console.error("Token tidak ditemukan!");
-      this.router.navigate(['/login']); // Redirect ke login jika tidak ada token
+      Swal.fire('Error', 'ID Pengguna atau Role tidak ditemukan di localStorage!', 'error');
     }
   }
-
-  decodeToken(token: string): any {
-    try {
-      return JSON.parse(atob(token.split('.')[1])); // Decode payload token
-    } catch (error) {
-      console.error("Error decoding token", error);
-      return null;
-    }
+  
+  isValidUserRole(role: string): boolean {
+    // Verifikasi apakah role sesuai dengan komponen ini (misalnya 'author' atau 'subscriber')
+    return role === 'author';  // Karena kita hanya ingin memvalidasi role 'author' di komponen ini
   }
-
+  
   loadUserProfile() {
-    if (!this.userId) return;
-
-    this.profileService.getUserById(this.userId).subscribe(user => {
+    console.log('Requesting user profile for ID:', this.userId); // Debugging
+    this.profileService.getUserById(this.userId!).subscribe(user => {
+      console.log('Fetched user data:', user); // Debugging
       if (user) {
         this.user = user;
         this.profileForm.patchValue({
@@ -75,11 +66,9 @@ export class AutProfileComponent implements OnInit {
         });
         this.imagePreview = this.getImagePath(user.profile);
       }
-    }, error => {
-      console.error("Error fetching user data:", error);
     });
-  }
-
+  }  
+  
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -92,39 +81,45 @@ export class AutProfileComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    if (!this.profileForm.value.nama || !this.profileForm.value.email || !this.profileForm.value.role) {
-      console.error("Nama, email, dan role tidak boleh kosong!");
-      return;
-    }
-
-    if (!this.userId) {
-      console.error("User ID tidak ditemukan!");
-      return;
-    }
-
-    const formData = new FormData();
-    Object.entries(this.profileForm.value).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        if (key === 'profile' && value instanceof File) {
-          formData.append(key, value);
-        } else {
-          formData.append(key, value.toString());
+   onSubmit() {
+      Swal.fire({
+        title: 'Konfirmasi',
+        text: 'Apakah Anda yakin ingin memperbarui profil?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Update!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const formData = new FormData();
+          Object.entries(this.profileForm.value).forEach(([key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+              if (key === 'profile' && value instanceof File) {
+                formData.append(key, value);
+              } else {
+                formData.append(key, value.toString());
+              }
+            }
+          });
+  
+          this.profileService.updateUser(this.userId!, formData).subscribe(
+            response => {
+              Swal.fire('Berhasil!', 'Profil berhasil diperbarui.', 'success');
+            },
+            error => {
+              Swal.fire('Error!', 'Terjadi kesalahan saat memperbarui profil.', 'error');
+            }
+          );
         }
-      }
-    });
-
-    console.log("Mengirim FormData:", formData);
-
-    this.profileService.updateUser(this.userId, formData).subscribe(response => {
-      console.log('Profile updated', response);
-    }, error => {
-      console.error('Error updating profile', error);
-    });
-  }
+      });
+    }
 
   getImagePath(imagePath: string): string {
-    return imagePath ? `http://localhost:3000/uploads/profiles/${imagePath}` : 'assets/default-profile.png';
+    if (!imagePath) return 'assets/default-image.jpg'; // Gambar default jika kosong
+    if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
+      return imagePath;
+    }
+    return this.profileService.getFilmImagePath(imagePath);
   }
 
   goBack() {

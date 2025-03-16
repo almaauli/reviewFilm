@@ -819,93 +819,106 @@ app.delete("/api/watchlist/:id_film/:id_user", (req, res) => {
   });
 });
 
-//profile
+// Storage untuk gambar dan video
 const storage = multer.diskStorage({
-  destination: './uploads/', // Simpan di folder uploads
+  destination: (req, file, cb) => {
+    if (file.mimetype.startsWith('video/')) {
+      cb(null, './mp4'); // Jika file adalah video, simpan di folder 'mp4'
+    } else {
+      cb(null, './uploads'); // Jika file adalah gambar, simpan di folder 'uploads'
+    }
+  },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname)); // Rename file dengan timestamp
   }
 });
 
-const upload = multer({ storage });
+// Filter untuk hanya menerima gambar dan video
+const fileFilter = (req, file, cb) => {
+  const filetypes = /jpeg|jpg|png|gif|mp4|avi|mov/; // Ekstensi yang diizinkan
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (extname && mimetype) {
+    return cb(null, true);
+  } else {
+    cb('Error: File harus berupa gambar atau video');
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 } // Maksimal 10MB
+});
 
 // Endpoint upload file
 app.post('/api/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
+    return res.status(400).send('Tidak ada file yang diunggah');
   }
-  res.json({ url: `http://localhost:3000/uploads/${req.file.filename}` });
+
+  // Tentukan URL berdasarkan apakah itu gambar atau video
+  let fileUrl;
+  if (req.file.mimetype.startsWith('video/')) {
+    fileUrl = `http://localhost:3000/videos/${req.file.filename}`; // URL video
+  } else {
+    fileUrl = `http://localhost:3000/uploads/${req.file.filename}`; // URL gambar
+  }
+
+  res.send({ url: fileUrl });
 });
 
+app.get('/profile/:id', verifyToken, (req, res) => {
+  console.log('Decoded token:', req.userId);  // Menampilkan ID yang diterima dari token
+  const userId = req.userId;
 
-app.get("/user/:id", (req, res) => {
-  const { id } = req.params;
-  db.query("SELECT * FROM users WHERE id_user = ?", [id], (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (result.length === 0)
-      return res.status(404).json({ error: "User not found" });
+  db.query('SELECT * FROM users WHERE id_user = ?', [userId], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database error' });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     res.json(result[0]);
   });
 });
-app.put("/user/:id", upload.single("profile"), (req, res) => {
+
+// Endpoint: Update user profile
+app.put("/profile/:id", upload.single("profile"), (req, res) => {
   const { id } = req.params;
   const { nama, usia, email, password, role, watchlist } = req.body;
   const profile = req.file ? req.file.filename : null;
 
-  console.log("Received update request:", req.body);
-  if (req.file) {
-    console.log("Uploaded file:", req.file);
-  }
-
-  // Validasi data
   if (!nama || !email || !role) {
-    console.error("Missing required fields");
     return res.status(400).json({ error: "Nama, email, dan role harus diisi" });
   }
 
-  // Ambil password lama jika tidak ada input baru
-  db.query(
-    "SELECT password FROM users WHERE id_user = ?",
-    [id],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      if (result.length === 0)
-        return res.status(404).json({ error: "User not found" });
+  db.query("SELECT password FROM users WHERE id_user = ?", [id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) return res.status(404).json({ error: "User not found" });
 
-      const newPassword = password ? password : result[0].password;
+    const currentPassword = result[0].password;
 
-      db.query(
-        "UPDATE users SET nama = ?, usia = ?, email = ?, password = ?, role = ?, watchlist = ?, updated_at = NOW() WHERE id_user = ?",
-        [
-          nama,
-          Number(usia) || null,
-          email,
-          newPassword,
-          role,
-          watchlist || null,
-          id,
-        ],
-        (err, result) => {
-          if (err) return res.status(500).json({ error: err.message });
-
-          if (profile) {
-            db.query(
-              "UPDATE users SET profile = ? WHERE id_user = ?",
-              [profile, id],
-              (err) => {
-                if (err) return res.status(500).json({ error: err.message });
-                res.json({
-                  message: "User updated successfully with new profile image",
-                });
-              }
-            );
-          } else {
-            res.json({ message: "User updated successfully" });
-          }
-        }
-      );
+    let newPassword = currentPassword;
+    if (password) {
+      newPassword = bcrypt.hashSync(password, 10);
     }
-  );
+
+    const updateQuery = `
+      UPDATE users 
+      SET nama = ?, usia = ?, email = ?, password = ?, role = ?, watchlist = ?, ${profile ? "profile = ?" : ""} updated_at = NOW() 
+      WHERE id_user = ?`;
+
+    const queryParams = [nama, Number(usia) || null, email, newPassword, role, watchlist || null];
+    if (profile) queryParams.push(profile);
+    queryParams.push(id);
+
+    db.query(updateQuery, queryParams, (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "User updated successfully" });
+    });
+  });
 });
 
 //author
@@ -926,6 +939,45 @@ app.get("/films/author/:id", (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(results);
   });
+});
+
+//forgot
+app.post('/forgot-password', (req, res) => {
+  const { email } = req.body;
+  
+  db.query('SELECT * FROM users WHERE email = ?', [email], (err, result) => {
+    if (err) return res.status(500).json({ message: 'Database error' });
+    if (result.length === 0) return res.status(404).json({ message: 'Email not found' });
+
+    const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: '15m' });
+    const resetLink = `http://localhost:4200/reset-password?token=${token}`;
+
+    transporter.sendMail({
+      to: email,
+      subject: 'Reset Password',
+      text: `Click this link to reset your password: ${resetLink}`
+    }, (error) => {
+      if (error) return res.status(500).json({ message: 'Failed to send email' });
+      res.json({ message: 'Reset link sent to your email' });
+    });
+  });
+});
+app.post('/reset-password', (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+      if (err) return res.status(500).json({ message: 'Error hashing password' });
+
+      db.query('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, decoded.email], (error) => {
+        if (error) return res.status(500).json({ message: 'Database error' });
+        res.json({ message: 'Password updated successfully' });
+      });
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid or expired token' });
+  }
 });
 
 // Logout

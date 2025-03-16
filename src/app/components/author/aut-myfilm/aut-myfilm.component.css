@@ -49,7 +49,6 @@ h2 {
   justify-content: space-between;
 }
 
-
 .film-card:hover {
   transform: scale(1.02);
   background: rgba(255, 255, 255, 0.2);
@@ -99,4 +98,62 @@ h2 {
   background: #212529;
   color: white;
   text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .film-card {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .film-card img {
+    height: 150px;
+    width: 150px;
+  }
+
+  .fab-btn {
+    bottom: 80px;
+    right: 10px;
+    width: 55px;
+    height: 55px;
+    font-size: 24px;
+  }
+
+  .container {
+    padding: 0 15px;
+  }
+
+  .kaki {
+    font-size: 0.8rem;
+    padding: 10px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .film-card {
+    flex-direction: column;
+  }
+
+  .film-card img {
+    height: 180px;
+    width: 100%;
+  }
+
+  .fab-btn {
+    bottom: 70px;
+    right: 5px;
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+  }
+
+  .kaki {
+    font-size: 0.7rem;
+    padding: 8px 0;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
 }

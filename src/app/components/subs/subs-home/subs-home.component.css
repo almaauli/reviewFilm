@@ -1,9 +1,14 @@
 html {
   scroll-behavior: smooth;
 }
+
 .section {
   position: relative;
   padding-top: 60px;
+}
+
+.hero-section {
+  margin-top: 20px;
 }
 
 body {
@@ -14,10 +19,10 @@ body {
 .custom-title {
   font-weight: 600;
   text-transform: capitalize;
-  color: #333; 
+  color: #333;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
   padding-bottom: 8px;
-  border-bottom: 2px solid #ff5733; /* Warna aksen yang lebih lembut */
+  border-bottom: 2px solid #ff5733;
   display: inline-block;
   letter-spacing: 1px;
 }
@@ -34,17 +39,16 @@ body {
 
 .search-form .btn {
   border-radius: 0 8px 8px 0;
-}  
+}
 
 .film-card {
   margin-bottom: 20px;
   border: none;
   border-radius: 10px;
-  background-color: #1c1c1c; /* Warna hitam elegan */
-  color: white; /* Teks putih agar kontras */
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1); /* Efek glow ringan */
+  background-color: #1c1c1c;
+  color: white;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
   transition: transform 0.2s, box-shadow 0.3s;
-  margin: 0 20px;
 }
 
 .film-card:hover {
@@ -61,7 +65,7 @@ body {
 
 .film-card .card-text {
   font-size: 1rem;
-  color: #b0b0b0; /* Abu-abu terang supaya tetap enak dibaca */
+  color: #b0b0b0;
 }
 
 .film-card .card-body {
@@ -69,11 +73,9 @@ body {
 }
 
 .film-card img {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  width: 100%; /* Pastikan gambar memenuhi card */
-  height: 300px; /* Sesuaikan tinggi gambar */
-  object-fit: cover; /* Memotong gambar agar tetap proporsional */
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
   border-radius: 10px;
 }
 
@@ -82,156 +84,167 @@ body {
   font-size: 1.2rem;
 }
 
-.film-duration {
-  color: #b0b0b0;
-  font-weight: bold;
-  margin-left: auto;
-}
-
-.rating {
-  color: #ffc107;
-  font-size: 1.2rem;
-}
 .carousel-inner {
   padding: 0 50px;
 }
+
 .carousel-control-prev {
   left: -50px;
 }
+
 .carousel-control-next {
   right: -50px;
 }
+
 #filmCarousel {
   width: 90%;
   margin: 0 auto;
 }
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  padding: 10px;
+
+.custom-btn, .custom-btn2 {
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
+
 .custom-btn {
-  background-color: #333; /* Warna latar belakang tombol */
-  color: #fff; /* Warna teks tombol */
-  border: none; /* Menghapus border */
-  padding: 15px; /* Padding tombol */
-  font-size: 18px; /* Ukuran font */
-  border-radius: 10px; /* Sudut tombol yang melengkung */
-  transition: background-color 0.3s ease; /* Transisi saat hover */
-  white-space: nowrap; /* Mencegah teks terpotong */
+  background-color: #333;
+  color: #fff;
 }
 
 .custom-btn:hover {
-  background-color: #555; /* Warna latar belakang saat hover */
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap; /* Membuat baris baru jika tidak muat */
-  justify-content: space-around; /* Menyusun tombol dengan jarak yang merata */
-}
-
-.col-md-3, .col-sm-6 {
-  flex: 0 0 auto; /* Membuat kolom memiliki lebar yang sesuai */
-  margin: 0 10px; /* Jarak antar kolom */
-}
-
-.rating-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.rating-star {
-  color: gold;
-  font-weight: bold;
-}
-
-.film-duration {
-  color: #6c757d;
-  font-weight: bold;
-  margin-left: auto;
-}
-/* Tambahin efek lebih keren di link "See More" */
-.see-more-link {
-font-size: 16px;
-color: #007bff;
-text-decoration: none;
-transition: color 0.3s ease;
-}
-
-.see-more-link:hover {
-text-decoration: underline;
-color: #00bfff; /* Biru lebih cerah saat hover */
-}
-.hero-section {
-margin-top: 30px;
+  background-color: #555;
 }
 
 .custom-btn2 {
-background-color: white; /* Warna latar belakang tombol */
-color: black; /* Warna teks tombol */
-border: 2px solid #333; /* Border abu-abu gelap */
-padding: 15px; /* Padding tombol */
-font-size: 18px; /* Ukuran font */
-border-radius: 10px; /* Sudut tombol yang melengkung */
-transition: background-color 0.3s ease; /* Transisi saat hover */
-white-space: nowrap; /* Mencegah teks terpotong */
+  background-color: white;
+  color: black;
+  border: 2px solid #333;
 }
 
 .custom-btn2:hover {
-background-color: #333;
-color: white;
+  background-color: #333;
+  color: white;
 }
 
-.comment-card {
-background: rgba(255, 255, 255, 0.7);
-border-radius: 12px;
-backdrop-filter: blur(10px);
-transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-.comment-card:hover {
-transform: scale(1.02);
-box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+.comment-card, .reviewer-card {
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.reviewer-card {
-background: rgba(245, 245, 245, 0.8);
-border-radius: 12px;
-backdrop-filter: blur(10px);
-transition: all 0.3s ease-in-out;
+.comment-card:hover, .reviewer-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
-.reviewer-card:hover {
-transform: translateY(-3px);
-box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.bi-chat-quote {
-color: #6c757d !important; /* Mengganti dari biru ke abu-abu soft */
-}
-
-.bi-star-fill {
-color: #f7c32e !important; /* Warna kuning lebih soft */
-}
-
-.text-primary {
-color: #5a6f81 !important; /* Biru yang lebih kalem */
-}
-
-.border-primary {
-border-color: #5a6f81 !important; /* Border lebih soft */
-}
-
 
 .kaki {
-width: 100%;
-margin: 0;
-padding: 20px 0;
-background-color: #000;
-position: absolute;
-left: 0;
-right: 0;
+  width: 100%;
+  padding: 20px 0;
+  background-color: #000;
+  position: absolute;
+  left: 0;
+  right: 0;
 }
 
+/* RESPONSIVE DESIGN */
+@media (max-width: 1200px) {
+  .carousel-inner {
+    padding: 0 30px;
+  }
+
+  #filmCarousel {
+    width: 85%;
+  }
+
+  .carousel-control-prev, .carousel-control-next {
+    display: none;
+  }
+
+  .film-card .card-title {
+    font-size: 1.3rem;
+  }
+
+  .film-card .card-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .carousel-inner {
+    padding: 0 20px;
+  }
+
+  .film-card img {
+    height: 250px;
+  }
+
+  .custom-btn, .custom-btn2 {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .custom-title {
+    font-size: 1.3rem;
+  }
+
+  .film-card .card-title {
+    font-size: 1.1rem;
+  }
+
+  .rating {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-inner {
+    padding: 0 15px;
+  }
+
+  .film-card img {
+    height: 200px;
+  }
+
+  .custom-btn, .custom-btn2 {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .film-card .card-title {
+    font-size: 1rem;
+  }
+
+  .rating {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel-inner {
+    padding: 0 10px;
+  }
+
+  .film-card img {
+    height: 180px;
+  }
+
+  .custom-btn, .custom-btn2 {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .custom-title {
+    font-size: 1.2rem;
+  }
+
+  .film-card .card-title {
+    font-size: 1rem;
+  }
+
+  .film-card .card-text {
+    font-size: 0.9rem;
+  }
+}

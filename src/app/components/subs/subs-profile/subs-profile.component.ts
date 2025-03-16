@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from '../../../services/profile.service';
+import Swal from 'sweetalert2';
+import { AutProfileComponent } from '../../author/aut-profile/aut-profile.component';
 
 @Component({
   selector: 'app-subs-profile',
@@ -10,7 +12,7 @@ import { ProfileService } from '../../../services/profile.service';
 export class SubsProfileComponent implements OnInit {
   profileForm: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
-  userId = 1; // Ganti dengan ID user yang sesuai
+  userId: number | undefined = undefined; // Ganti sesuai dengan ID pengguna yang login
   user: any;
 
   constructor(private fb: FormBuilder, private profileService: ProfileService) {
@@ -19,31 +21,54 @@ export class SubsProfileComponent implements OnInit {
       usia: [''],
       email: [''],
       password: [''],
-      profile: [null],
-      role: [''], // Tambahkan role untuk update
-      watchlist: [''] // Tambahkan jika diperlukan
+      role: [''],
+      watchlist: [''],
+      profile: [null]
     });
   }
 
   ngOnInit() {
-    this.loadUserProfile();
-  }
-
-  loadUserProfile() {
-    this.profileService.getUserById(this.userId).subscribe(user => {
-      if (user) {
-        this.user = user;
-        this.profileForm.patchValue({
-          nama: user.nama,
-          usia: user.usia,
-          email: user.email,
-          role: user.role,
-          watchlist: user.watchlist || ''
-        });
-        this.imagePreview = this.getImagePath(user.profile);
+    const storedUserId = localStorage.getItem('userId');
+    const userRole = localStorage.getItem('role');  // Ambil role untuk verifikasi
+  
+    if (storedUserId && userRole) {
+      this.userId = parseInt(storedUserId, 10);
+      console.log('User ID from localStorage:', this.userId, 'Role:', userRole); // Debugging
+      
+      // Verifikasi apakah user yang sedang login sesuai dengan komponen ini
+      if (this.isValidUserRole(userRole)) {
+        this.loadUserProfile();
+      } else {
+        Swal.fire('Error', 'Role pengguna tidak sesuai!', 'error');
       }
-    });
+    } else {
+      Swal.fire('Error', 'ID Pengguna atau Role tidak ditemukan di localStorage!', 'error');
+    }
   }
+  
+  isValidUserRole(role: string): boolean {
+    // Verifikasi apakah role sesuai dengan komponen ini (misalnya 'author' atau 'subscriber')
+    return (this instanceof AutProfileComponent && role === 'author') || 
+           (this instanceof SubsProfileComponent && role === 'subscriber');
+  }
+  
+loadUserProfile() {
+  console.log('Requesting user profile for ID:', this.userId);
+  this.profileService.getUserById(this.userId!).subscribe(user => {
+    console.log('Fetched user data:', user); // Debugging
+    if (user) {
+      this.user = user;
+      this.profileForm.patchValue({
+        nama: user.nama,
+        usia: user.usia,
+        email: user.email,
+        role: user.role,
+        watchlist: user.watchlist || ''
+      });
+      this.imagePreview = this.getImagePath(user.profile);
+    }
+  });
+}
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -58,33 +83,44 @@ export class SubsProfileComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.profileForm.value.nama || !this.profileForm.value.email || !this.profileForm.value.role) {
-      console.error("Nama, email, dan role tidak boleh kosong!");
-      return;
-    }
+    Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Apakah Anda yakin ingin memperbarui profil?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Update!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const formData = new FormData();
+        Object.entries(this.profileForm.value).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && value !== '') {
+            if (key === 'profile' && value instanceof File) {
+              formData.append(key, value);
+            } else {
+              formData.append(key, value.toString());
+            }
+          }
+        });
 
-    const formData = new FormData();
-    Object.entries(this.profileForm.value).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        if (key === 'profile' && value instanceof File) {
-          formData.append(key, value);
-        } else {
-          formData.append(key, value.toString()); // Konversi ke string
-        }
+        this.profileService.updateUser(this.userId!, formData).subscribe(
+          response => {
+            Swal.fire('Berhasil!', 'Profil berhasil diperbarui.', 'success');
+          },
+          error => {
+            Swal.fire('Error!', 'Terjadi kesalahan saat memperbarui profil.', 'error');
+          }
+        );
       }
-    });
-
-    console.log("Mengirim FormData:", formData);
-
-    this.profileService.updateUser(this.userId, formData).subscribe(response => {
-      console.log('Profile updated', response);
-    }, error => {
-      console.error('Error updating profile', error);
     });
   }
 
   getImagePath(imagePath: string): string {
-    return `http://localhost:3000/uploads/profiles/${imagePath}`;
+    if (!imagePath) return 'assets/default-image.jpg'; // Gambar default jika kosong
+    if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
+      return imagePath;
+    }
+    return this.profileService.getFilmImagePath(imagePath);
   }
 
   goBack() {

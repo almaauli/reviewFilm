@@ -1,5 +1,5 @@
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="col-lg-5 col-md-7 col-sm-9">
+  <div class="col-12 col-sm-9 col-md-7 col-lg-5">
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
       <div class="card-body p-4">
         <h3 class="text-center fw-bold mb-3">Welcome Back</h3>
@@ -37,11 +37,13 @@
             Sign In
           </button>
         </form>
+        <div class="text-center mt-2">
+          <a routerLink="/forgot-password" class="text-decoration-none">Forgot Password?</a>
+        </div>
+        
         <div class="text-center mt-3">
           <p class="mb-1">Don't have an account? <a routerLink="/register" class="text-decoration-none">Register</a></p>
           <button class="btn text text-muted text-decoration-none" (click)="goBack()">Cancel</button>
-
-
         </div>
       </div>
     </div>

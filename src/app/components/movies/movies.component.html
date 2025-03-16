@@ -1,4 +1,4 @@
-<app-navbar *ngIf="!isAuthenticated"></app-navbar>
+<app-navbar ></app-navbar>
 <app-navbar-subs *ngIf="isAuthenticated && userRole === 'user'"></app-navbar-subs>
 <app-nav-author *ngIf="isAuthenticated && userRole === 'author'"></app-nav-author>
 

@@ -1,45 +1,99 @@
 html {
-    scroll-behavior: smooth;
-  }
-  .section {
-    position: relative;
-    padding-top: 60px;
-  }
+  scroll-behavior: smooth;
+}
 
-  h2 {
-    color: #343a40;
-    text-align: center;
-  }
+body {
+  padding-top: 40px;
+  background-color: #f8f9fa;
+}
 
-  body {
-    padding-top: 40px;
-    background-color: #f8f9fa;
-  }
-  .hover-zoom {
-    transition: transform 0.3s ease-in-out;
-  }
-  .hover-zoom:hover {
-    transform: scale(1.05);
-  }
+h2 {
+  color: #343a40;
+  text-align: center;
+}
+
+.section {
+  position: relative;
+  padding-top: 60px;
+}
+
+.hover-zoom {
+  transition: transform 0.3s ease-in-out;
+}
+
+.hover-zoom:hover {
+  transform: scale(1.05);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-body {
+  flex-grow: 1;
+}
+
+.btn {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.kaki {
+  width: 100%;
+  margin: 0;
+  padding: 20px 0;
+  background-color: #000;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  /* Adjust card layout for smaller screens */
   .card {
-    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .card-body {
+    padding: 10px;
+  }
+
+  .kaki {
+    padding: 15px 0;
+  }
+  
+  /* Adjust button width on smaller screens */
+  .btn {
+    width: auto;
+    margin: 10px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Stack content for mobile screens */
+  .card {
     flex-direction: column;
   }
+
   .card-body {
-    flex-grow: 1;
+    padding: 5px;
   }
-  .btn {
-      width: 100%;
-      border-radius: 8px;
-    }
-  
+
+  /* Smaller footer padding */
   .kaki {
-    width: 100%;
-    margin: 0;
-    padding: 20px 0;
-    background-color: #000;
-    position: absolute;
-    left: 0;
-    right: 0;
+    padding: 10px 0;
   }
-  
+
+  /* Adjust heading size for small screens */
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  /* Adjust button size on very small screens */
+  .btn {
+    padding: 12px;
+  }
+}

@@ -30,27 +30,30 @@ h2 {
 #layoutSidenav {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 #sidenav {
   width: 250px;
   position: fixed;
   left: 0;
-  top: 56px; /* Sesuaikan dengan tinggi navbar */
+  top: 56px;
   bottom: 0;
   background-color: #212529;
+  transition: width 0.3s ease;
 }
 
 #layoutSidenav_content {
   margin-left: 250px;
   padding: 20px;
   width: calc(100% - 250px);
+  transition: margin-left 0.3s ease;
 }
 
 .container {
   margin-left: 260px; 
   padding: 20px;
-  margin-top: 60px; 
+  margin-top: 60px;
 }
 
 .table {
@@ -76,7 +79,6 @@ h2 {
   background-color: var(--light);
 }
 
-
 .btn {
   padding: 8px 12px;
   border-radius: 5px;
@@ -86,12 +88,12 @@ h2 {
 }
 
 .btn-primary {
-  background-color:rgb(35, 85, 235);
+  background-color: rgb(35, 85, 235);
   color: white;
 }
 
 .btn-danger {
-  background-color:rgb(206, 62, 62);
+  background-color: rgb(206, 62, 62);
   color: white;
 }
 
@@ -120,9 +122,9 @@ form {
 }
 
 .table-container {
-    max-height: 400px; 
-    overflow-y: auto; 
-    margin-top: 20px; 
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 20px;
 }
 
 .table {
@@ -132,9 +134,80 @@ form {
   border-radius: 8px;
   overflow: hidden;
 }
-td img {
-  width: 50px; /* Sesuaikan ukuran sesuai kebutuhan */
-  height: 50px;
-  object-fit: cover; /* Agar gambar tetap proporsional tanpa distorsi */
-  border-radius: 50%; /* Opsional, untuk membuat gambar bulat */
+
+.table td img {
+  max-width: 150px; /* Set the max width */
+  height: auto; /* Maintain aspect ratio */
+  width: 100%; 
+}
+
+
+@media (max-width: 768px) {
+  #sidenav {
+    width: 200px;
+  }
+
+  #layoutSidenav_content {
+    margin-left: 200px;
+  }
+
+  .container {
+    margin-left: 210px;
+    margin-top: 80px;
+  }
+
+  /* For smaller screens, you can collapse the sidebar */
+  #layoutSidenav {
+    flex-direction: column;
+  }
+
+  #sidenav {
+    width: 100%;
+    position: static;
+  }
+
+  #layoutSidenav_content {
+    margin-left: 0;
+  }
+
+  /* Stack layout for the table */
+  .table-container {
+    max-height: 300px;
+  }
+
+  .btn {
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  #sidenav {
+    width: 100%;
+  }
+
+  #layoutSidenav_content {
+    margin-left: 0;
+  }
+
+  .container {
+    margin-left: 0;
+    margin-top: 90px;
+  }
+
+  /* For very small screens, stack content layout */
+  #layoutSidenav {
+    flex-direction: column;
+  }
+
+  #navbar {
+    position: relative;
+  }
+
+  .btn {
+    padding: 5px 8px;
+  }
+
+  form {
+    padding: 15px;
+  }
 }

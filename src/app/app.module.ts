@@ -46,6 +46,7 @@ import { AutProfileComponent } from './components/author/aut-profile/aut-profile
 import { AutWatchlistComponent } from './components/author/aut-watchlist/aut-watchlist.component';
 import { AutMyfilmComponent } from './components/author/aut-myfilm/aut-myfilm.component';
 import { SafeUrlPipe } from './pipe/safe-url.pipe';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { SafeUrlPipe } from './pipe/safe-url.pipe';
     AutWatchlistComponent,
     AutMyfilmComponent,
     SafeUrlPipe,
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,

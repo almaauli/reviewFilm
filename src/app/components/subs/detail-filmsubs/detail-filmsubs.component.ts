@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilmService } from '../../../services/film.service';
 import { WatchlistService } from '../../../services/watchlist.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -18,6 +19,7 @@ export class DetailFilmsubsComponent implements OnInit {
   constructor(private route: ActivatedRoute, 
     private filmService: FilmService, 
     private location: Location, 
+    private sanitizer: DomSanitizer,
     private watchlistService: WatchlistService,
     private router: Router) {}
 
@@ -107,29 +109,31 @@ export class DetailFilmsubsComponent implements OnInit {
     );
   }
 
- // Cek apakah URL adalah link YouTube
- isYouTubeVideo(trailerUrl: string): boolean {
-  return trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be');
-}
-
-  // Konversi URL YouTube menjadi embeddable link
-getEmbedUrl(trailerUrl: string): string {
-  if (!trailerUrl) return '';
-
-  const videoIdMatch = trailerUrl.match(/(?:youtube\.com\/(?:.*v=|embed\/|v\/)|youtu\.be\/)([^&?]+)/);
-  return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : trailerUrl;
-}
-
-getVideoPath(videoPath: string): string {
-  if (!videoPath) return '';
-
-  // Jika sudah merupakan URL lengkap, langsung kembalikan
-  if (videoPath.startsWith('http')) {
-    return videoPath;
-  }
-
-  // Jika hanya nama file, tambahkan path backend
-  return `http://localhost:3000/videos/${videoPath}`;
-}  
-
+    // Cek apakah URL adalah link YouTube
+   getSafeUrl(trailerUrl: string): SafeResourceUrl {
+        const embedUrl = this.getEmbedUrl(trailerUrl);
+        return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+      }
+    
+      isYouTubeVideo(trailerUrl: string): boolean {
+        return trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be');
+      }
+    
+        // Konversi URL YouTube menjadi embeddable link
+      getEmbedUrl(trailerUrl: string): string {
+        if (!trailerUrl) return '';
+    
+        const videoIdMatch = trailerUrl.match(/(?:youtube\.com\/(?:.*v=|embed\/|v\/)|youtu\.be\/)([^&?]+)/);
+        return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : trailerUrl;
+      }
+    
+      getVideoPath(videoPath: string): string {
+        console.log("Mendapatkan path video:", videoPath); // Log untuk memastikan path video
+        if (!videoPath) return '';
+        if (videoPath.startsWith('http')) {
+          return videoPath;
+        }
+        return `http://localhost:3000/videos/${videoPath}`;
+      }
+      
 }

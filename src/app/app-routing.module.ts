@@ -26,6 +26,7 @@ import { AutWatchlistComponent } from './components/author/aut-watchlist/aut-wat
 import { DetailFilmautComponent } from './components/author/detail-filmaut/detail-filmaut.component';
 import { ListFilmautComponent } from './components/author/list-filmaut/list-filmaut.component';
 import { AutMyfilmComponent } from './components/author/aut-myfilm/aut-myfilm.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -54,6 +55,7 @@ const routes: Routes = [
   { path: 'detail-filmaut/:id', component: DetailFilmautComponent },
   { path: 'list-filmaut', component: ListFilmautComponent },
   { path: 'myfilm', component: AutMyfilmComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: '', redirectTo: 'anon', pathMatch: 'full' },
 ];
 

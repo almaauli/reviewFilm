@@ -98,12 +98,9 @@ export class FilmService {
     });
   }
 
- uploadFile(formData: FormData): Observable<any> {
-  return this.http.post('http://localhost:3000/api/upload', formData, {
-    reportProgress: true,
-    observe: 'events'
-  });
-}
-
+  uploadFile(formData: FormData) {
+    console.log("Form data sebelum dikirim:", formData);
+    return this.http.post<any>('http://localhost:3000/api/upload', formData);
+  }
   
 }

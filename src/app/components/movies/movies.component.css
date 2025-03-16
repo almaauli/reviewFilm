@@ -1,6 +1,7 @@
 html {
   scroll-behavior: smooth;
 }
+
 .section {
   position: relative;
   padding-top: 60px;
@@ -86,4 +87,58 @@ body {
   position: relative;
   left: 0;
   right: 0;
+  text-align: center;
+  color: white;
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .film-image {
+    height: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .film-card {
+    transform: none;
+  }
+
+  .film-card:hover {
+    transform: none;
+  }
+
+  .film-image {
+    height: 220px;
+  }
+
+  .card-title {
+    font-size: 16px;
+  }
+
+  .card-text {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .film-image {
+    height: 180px;
+  }
+
+  .card-body {
+    padding: 10px;
+  }
+
+  .card-title {
+    font-size: 14px;
+  }
+
+  .card-text {
+    font-size: 12px;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 8px;
+  }
 }

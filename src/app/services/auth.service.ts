@@ -105,8 +105,17 @@ export class AuthService {
     }
   }
 
+  
   getUserRole(): string {
     return localStorage.getItem('role') || 'anon'; // Default ke 'anon' jika tidak ada role
+  }
+  
+  forgotPassword(email: string) {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+  }
+  
+  resetPassword(token: string | null, newPassword: string) {
+    return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
   }
   
 

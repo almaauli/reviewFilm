@@ -73,6 +73,16 @@ export class AutMyfilmComponent implements OnInit {
     }
     return this.filmService.getFilmImagePath(imagePath);
   }
+
+  getVideoPath(videoPath: string): string {
+    console.log("Mendapatkan path video:", videoPath); // Log untuk memastikan path video
+    if (!videoPath) return '';
+    if (videoPath.startsWith('http')) {
+      return videoPath;
+    }
+    return `http://localhost:3000/videos/${videoPath}`;
+  }
+  
   
   openAddFilmModal() {
     this.isEdit = false;
@@ -128,11 +138,18 @@ export class AutMyfilmComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
   }
 
+  isYouTubeVideo(trailerUrl: string): boolean {
+    return trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be');
+  }
+
+    // Konversi URL YouTube menjadi embeddable link
   getEmbedUrl(trailerUrl: string): string {
     if (!trailerUrl) return '';
-    const videoIdMatch = trailerUrl.match(/(?:youtube\.com\/.*v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&?]+)/);
-    return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : '';
+
+    const videoIdMatch = trailerUrl.match(/(?:youtube\.com\/(?:.*v=|embed\/|v\/)|youtu\.be\/)([^&?]+)/);
+    return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : trailerUrl;
   }
+
 
   deleteFilm(id: number) {
     Swal.fire({

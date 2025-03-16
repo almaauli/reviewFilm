@@ -46,3 +46,45 @@ video {
   right: 0;
   padding: 20px 0;
 }
+
+/* Responsiveness */
+@media (max-width: 992px) {
+  .card-body p {
+    font-size: 14px;
+  }
+  .card-img-top {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.8rem;
+  }
+  .card-body p {
+    font-size: 13px;
+  }
+  .card-img-top {
+    max-height: 250px;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    padding-top: 50px;
+  }
+  h2 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .card-body p {
+    font-size: 12px;
+  }
+  .card-img-top {
+    max-height: 200px;
+  }
+  .kaki {
+    text-align: center;
+    padding: 15px 0;
+  }
+}

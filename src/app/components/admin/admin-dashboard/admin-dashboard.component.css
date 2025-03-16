@@ -29,21 +29,24 @@ h2 {
 #layoutSidenav {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 #sidenav {
   width: 250px;
   position: fixed;
   left: 0;
-  top: 56px; /* Sesuaikan dengan tinggi navbar */
+  top: 56px;
   bottom: 0;
   background-color: #212529;
+  transition: width 0.3s ease; /* Smooth transition when resizing */
 }
 
 #layoutSidenav_content {
   margin-left: 250px;
   padding: 20px;
   width: calc(100% - 250px);
+  transition: margin-left 0.3s ease; /* Smooth transition for content when resizing */
 }
 
 .container-fluid {
@@ -52,12 +55,12 @@ h2 {
 
 .card {
   border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for transform and shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px); /* Slightly lift the card */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .card-body {
@@ -86,13 +89,65 @@ a {
 }
 
 #datatablesSimple {
-  width: 100%; 
-  border-collapse: collapse; 
+  width: 100%;
+  border-collapse: collapse;
 }
 
 #datatablesSimple th, 
 #datatablesSimple td {
   padding: 10px;
-  text-align: left; 
-  border-bottom: 2px solid #ddd; 
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+@media (max-width: 768px) {
+  #sidenav {
+    width: 200px;
+  }
+
+  #layoutSidenav_content {
+    margin-left: 200px;
+  }
+
+  /* Optional: Stack layout for smaller screens */
+  #layoutSidenav {
+    flex-direction: column;
+  }
+
+  #sidenav {
+    width: 100%;
+    position: static;
+  }
+
+  #layoutSidenav_content {
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .card-body {
+    padding: 10px;
+  }
+
+  footer {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  #sidenav {
+    width: 100%;
+  }
+
+  #layoutSidenav_content {
+    margin-left: 0;
+  }
+
+  /* For smaller screens, the navbar and sidenav are stacked */
+  #layoutSidenav {
+    flex-direction: column;
+  }
+
+  #navbar {
+    position: relative;
+  }
 }
