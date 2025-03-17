@@ -757,13 +757,21 @@ app.get("/api/films/:id", (req, res) => {
 });
 app.get("/api/comments/film/:id", (req, res) => {
   const { id } = req.params;
-  const sql =
-    "SELECT * FROM komentar WHERE id_film = ? ORDER BY created_at DESC";
+  const sql = `
+    SELECT k.id_komentar, k.id_film, k.id_user, k.rating_user, k.komentar, k.created_at,
+           u.nama AS username, u.profile 
+    FROM komentar k
+    JOIN users u ON k.id_user = u.id_user
+    WHERE k.id_film = ?
+    ORDER BY k.created_at DESC
+  `;
+
   db.query(sql, [id], (err, results) => {
     if (err) return res.status(500).json(err);
     res.json(results);
   });
 });
+
 app.get("/films/genre/:id_genre", (req, res) => {
   const { id_genre } = req.params;
   const sql = "SELECT * FROM film WHERE genre = ?";

@@ -3,9 +3,9 @@
 <html lang="id">
 <body>
     <div class="container mt-4" *ngIf="currentSection === 'latest'">
-      <h2 class="text-center mb-4 text-secondary font-weight-bold display-4">Latest Film!</h2>
+      <h2 class="custom-title">Latest Films!</h2>
       <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4" *ngFor="let film of latestFilms">
+        <div class="col-sm-12 col-md-6 col-lg-4" *ngFor="let film of latestFilms">
           <div class="film-card card d-flex flex-column h-100">
             <div class="film-image">
               <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
@@ -22,9 +22,9 @@
     </div>
 
     <div class="container mt-4" *ngIf="currentSection === 'popular'">
-      <h2 class="text-center mb-4 text-secondary font-weight-bold display-4">Populer Film!</h2>
+      <h2 class="custom-title">Popular Films!</h2>
       <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4" *ngFor="let film of popularFilms">
+        <div class="col-sm-12 col-md-6 col-lg-4" *ngFor="let film of popularFilms">
           <div class="film-card card d-flex flex-column h-100">
             <div class="film-image">
               <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
@@ -41,10 +41,10 @@
     </div>
 
     <div class="container mt-4" *ngIf="currentSection === 'genre'">
-      <h2 class="text-center mb-4 text-secondary font-weight-bold display-4">Film Berdasarkan Genre</h2>
+      <h2 class="custom-title">Genre!</h2>
       <div *ngIf="filmsByGenre.length > 0; else noFilms">
         <div class="row justify-content-center">
-          <div class="col-md-6 col-lg-4" *ngFor="let film of filmsByGenre">
+          <div class="col-sm-12 col-md-6 col-lg-4" *ngFor="let film of filmsByGenre">
             <div class="film-card card d-flex flex-column h-100">
               <div class="film-image">
                 <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />
@@ -62,9 +62,9 @@
     </div>
 
     <div class="container mt-4" *ngIf="currentSection === 'list' && films.length > 0; else noFilms">
-      <h2 class="text-center mb-4 text-secondary font-weight-bold display-4">Daftar Film</h2>
+      <h2 class="custom-title">Films!</h2>
       <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4" *ngFor="let film of films">
+        <div class="col-sm-12 col-md-6 col-lg-4" *ngFor="let film of films">
           <div class="film-card card d-flex flex-column h-100">
             <div class="film-image">
               <img [src]="getImagePath(film.gambar_film)" class="card-img-top" [alt]="film.nama_film" />

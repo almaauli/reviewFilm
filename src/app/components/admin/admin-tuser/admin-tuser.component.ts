@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import Swal from 'sweetalert2';
 import bootstrap from 'bootstrap';
 
@@ -16,10 +17,11 @@ export class AdminTuserComponent implements OnInit {
   isEditMode: boolean = false;
   isAdmin = false;
   modalInstance: any;
+  safeTrailerUrl: SafeResourceUrl = '';
   currentPage = 1; // Halaman awal
   itemsPerPage = 10; // Jumlah item per halaman
 
-  constructor(private userService: UserService, private fb: FormBuilder) {
+  constructor(private userService: UserService, private sanitizer: DomSanitizer, private fb: FormBuilder) {
     this.userForm = this.fb.group({
       nama: ['', Validators.required],
       usia: ['', [Validators.required, Validators.min(1)]],
@@ -40,7 +42,8 @@ export class AdminTuserComponent implements OnInit {
   loadUsers(): void {
     this.userService.getUsers().subscribe(
       (data) => {
-        this.userList = data;
+        this.userList = [...data]; // Pakai spread agar Angular mendeteksi perubahan
+        console.log("User list setelah load:", this.userList); // Debugging
       },
       (error) => {
         console.error('Gagal mengambil data user:', error);
@@ -48,12 +51,14 @@ export class AdminTuserComponent implements OnInit {
       }
     );
   }
+  
 
   onSubmit(): void {
     if (this.userForm.valid) {
       this.userService.addUser(this.userForm.value).subscribe(
         () => {
           this.loadUsers();
+          console.log("User list setelah tambah:", this.userList); // Debugging
           this.userForm.reset();
           this.closeModal();
           Swal.fire('Sukses!', 'User berhasil ditambahkan.', 'success');
@@ -63,7 +68,7 @@ export class AdminTuserComponent implements OnInit {
         }
       );
     }
-  }
+  }  
 
   editUser(user: any): void {
     console.log("USER DIPILIH UNTUK EDIT:", user);
@@ -90,28 +95,12 @@ export class AdminTuserComponent implements OnInit {
   }  
 
   updateUser(): void {
-    console.log("Mengirim update user:", this.userForm.value);
-  
+    console.log("Data sebelum update:", this.userForm.value); // Debugging
     if (this.selectedUserId !== null) {
-      // Buat payload tanpa password jika kosong
-      const payload: any = {
-        ...this.userForm.value,
-        usia: Number(this.userForm.value.usia),
-        watchlist: this.userForm.value.watchlist || '' // Pastikan tidak undefined
-      };
-  
+      const payload: any = { ...this.userForm.value };
       if (!payload.password) {
-        delete payload.password; // Hapus password jika kosong
+        delete payload.password;
       }
-  
-      console.log("Payload yang dikirim:", payload);
-  
-      // Debug: Cek validasi form
-      if (!this.userForm.valid) {
-        console.error("Form tidak valid!", this.userForm.errors);
-        return;
-      }
-  
       this.userService.updateUser(this.selectedUserId, payload).subscribe(
         () => {
           console.log('User berhasil diperbarui');
@@ -127,7 +116,7 @@ export class AdminTuserComponent implements OnInit {
     } else {
       console.error("ID user null!");
     }
-  }
+  }  
   
   deleteUser(id: number): void {
     Swal.fire({
@@ -163,12 +152,10 @@ export class AdminTuserComponent implements OnInit {
   }
 
   getImagePath(imagePath: string): string {
-    if (!imagePath) return 'assets/default-image.jpg';
-    if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
-      return imagePath;
-    }
-    return this.userService.getFilmImagePath(imagePath);
+    if (!imagePath) return 'assets/default-image.jpg'; // Gambar default jika tidak ada
+    return `http://localhost:3000/uploads/${imagePath}`; // Sesuaikan dengan lokasi backend menyimpan file
   }
+  
   
   onFileSelected(event: any, field: string) {
     const file = event.target.files[0];
@@ -177,10 +164,10 @@ export class AdminTuserComponent implements OnInit {
       formData.append('file', file);
   
       this.userService.uploadFile(formData).subscribe((response: any) => {
-        if (response.url) {
-          this.userForm.patchValue({ [field]: response.url });
+        if (response.fileName) { // Pastikan backend mengembalikan 'fileName'
+          this.userForm.patchValue({ [field]: response.fileName });
         }
-      });
+      });      
     }
   }
   

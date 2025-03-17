@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 export class DetailFilmautComponent implements OnInit {
   film: any;
   comments: any[] = [];
+  userProfileImage: string = 'assets/default-profile.png'; // Default image
 
   constructor(private route: ActivatedRoute, 
     private filmService: FilmService, 
@@ -40,7 +41,13 @@ export class DetailFilmautComponent implements OnInit {
     // Jika bukan URL, anggap sebagai path file yang di-upload dari backend
     return this.filmService.getFilmImagePath(imagePath);
   }
+
+  getImagePath2(imagePath: string): string {
+    if (!imagePath) return 'assets/default-profile.png'; // Default image jika kosong
+    if (imagePath.startsWith('http')) return imagePath; // Jika sudah URL lengkap
   
+    return `http://localhost:3000/uploads/${imagePath}`; // Sesuaikan dengan path backend
+  }
 
   getFilmDetail(id: string) {
     this.filmService.getFilmById(id).subscribe((data) => {
@@ -54,10 +61,17 @@ export class DetailFilmautComponent implements OnInit {
   }  
 
   getFilmComments(id: string) {
-    this.filmService.getCommentsByFilmId(id).subscribe((data) => {
-      this.comments = data;
+    this.filmService.getCommentsByFilmId(id).subscribe((data: any[]) => {
+      console.log("Data Komentar dari Backend:", data); // Debugging
+  
+      this.comments = data.map((comment: any) => ({
+        ...comment,
+        profile: this.getImagePath2(comment.profile) // Pastikan profile tidak undefined/null
+      }));      
+  
+      console.log("Komentar setelah diubah:", this.comments); // Debugging
     });
-  }
+  }  
 
   convertToHours(minutes: number): string {
     const hours = Math.floor(minutes / 60);

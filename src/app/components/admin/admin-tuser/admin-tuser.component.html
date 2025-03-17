@@ -48,7 +48,7 @@
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
             <td>
-              <img [src]="getImagePath(user.profile)" alt="Profile Picture" class="img-fluid" />
+              <img [src]="getImagePath(user.profile)" alt="User Profile" class="img-fluid" />
             </td>
             <td>{{ user.watchlist }}</td>
             <td>{{ user.created_at }}</td>
@@ -98,7 +98,7 @@
                 </div>
                 <div class="mb-3">
                   <label for="profile" class="form-label">Profile</label>
-                  <input type="text" id="profileUrl" class="form-control" formControlName="profile">
+                  <input type="text" id="profileUrl" class="form-control" formControlName="profile" [(ngModel)]="userForm.value.profile">
                   <input type="file" class="form-control mt-2" (change)="onFileSelected($event, 'profile')">
                 
                   <!-- Preview Gambar -->

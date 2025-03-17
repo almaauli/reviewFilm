@@ -26,14 +26,15 @@
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        <i class="fas fa-user fa-fw"></i>
+      <img *ngIf="imagePreview" [src]="imagePreview" alt="Profile Image" 
+           class="rounded-circle me-2" width="30" height="30"/>
       </a>
       <ul
         class="dropdown-menu dropdown-menu-end"
         aria-labelledby="navbarDropdown"
       >
-        <li><a class="dropdown-item" routerLink="#!">Settings</a></li>
-        <li><a class="dropdown-item" routerLink="#!">Activity Log</a></li>
+      <li><a class="dropdown-item" (click)="openProfileModal()">Settings</a></li>
+
         <li><hr class="dropdown-divider" /></li>
         <li>
           <a class="dropdown-item" (click)="logout()" style="cursor: pointer"
@@ -44,3 +45,58 @@
     </li>
   </ul>
 </nav>
+
+<!-- Modal Update Profile -->
+<div *ngIf="isProfileModalOpen" class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Profile</h5>
+        <button type="button" class="btn-close" (click)="closeProfileModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <div class="text-center mb-3">
+              <img *ngIf="imagePreview" [src]="imagePreview" alt="Profile Image" 
+                   class="rounded-circle border shadow-sm" width="120" height="120">
+              <div class="mt-2">
+                <label class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-upload"></i> Upload Photo
+                  <input type="file" (change)="onFileSelected($event)" hidden>
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Nama</label>
+              <input type="text" class="form-control" formControlName="nama" placeholder="Masukkan nama">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" formControlName="email" readonly>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Usia</label>
+              <input type="number" class="form-control" formControlName="usia" placeholder="Masukkan usia">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-control" formControlName="password" placeholder="Masukkan password baru">
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay untuk modal -->
+<div *ngIf="isProfileModalOpen" class="modal-backdrop fade show" (click)="closeProfileModal()"></div>
