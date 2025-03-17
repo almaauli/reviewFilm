@@ -50,7 +50,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let film of filmList">
+            <tr *ngFor="let film of filmList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
               <td>{{ film.id_film }}</td>
               <td>{{ film.nama_film }}</td>
               <td>
@@ -68,8 +68,7 @@
               <td>
                 <img [src]="getImagePath(film.gambar_film)" alt="Gambar Film" />
               </td>
-              
-              <td>{{ film.deskripsi }}</td>
+              <td>{{ film.deskripsi | slice:0:50 }}...</td>
               <td>{{ film.genre }}</td>
               <td>{{ film.tahun }}</td>
               <td>{{ film.negara }}</td>
@@ -84,6 +83,7 @@
             </tr>
           </tbody>
         </table>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
 
@@ -113,11 +113,11 @@
                             frameborder="0" allowfullscreen>
                     </iframe>
 
-                    <!-- Cek apakah trailer adalah video lokal -->
-                    <video *ngIf="!isYouTubeVideo(filmForm.value.trailer)" width="100%" height="315" controls>
-                      <source [src]="getVideoPath(filmForm.value.trailer)" type="video/mp4">
+                    <video *ngIf="filmForm.value.trailer" width="100%" height="315" controls>
+                      <source [src]="filmForm.value.trailer" type="video/mp4">
                       Your browser does not support the video tag.
                     </video>
+
                   </div>
                 </div>
                 <div class="mb-3">

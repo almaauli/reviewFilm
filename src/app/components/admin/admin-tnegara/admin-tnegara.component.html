@@ -40,7 +40,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let negara of negaraList">
+            <tr *ngFor="let negara of negaraList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
               <td>{{ negara.id_negara }}</td>
               <td>{{ negara.nama_negara }}</td>
               <td>{{ negara.created_at }}</td>
@@ -52,6 +52,7 @@
             </tr>
           </tbody>
         </table>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
       </div>
       
       <!-- Modal Tambah/Edit Negara -->

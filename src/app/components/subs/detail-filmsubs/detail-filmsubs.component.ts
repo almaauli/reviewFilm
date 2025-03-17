@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { FilmService } from '../../../services/film.service';
 import { WatchlistService } from '../../../services/watchlist.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -18,7 +17,6 @@ export class DetailFilmsubsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, 
     private filmService: FilmService, 
-    private location: Location, 
     private sanitizer: DomSanitizer,
     private watchlistService: WatchlistService,
     private router: Router) {}
@@ -60,11 +58,6 @@ export class DetailFilmsubsComponent implements OnInit {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return remainingMinutes > 0 ? `${hours} jam ${remainingMinutes} menit` : `${hours} jam`;
-  }
-  
-  goBack() {
-    console.log('Tombol kembali diklik!');
-    this.location.back();
   }
 
   redirectToKomen(id_film: number) {

@@ -57,8 +57,4 @@ export class MoviesComponent implements OnInit {
     }
   }  
   
-  goBack() {
-    console.log('Tombol kembali diklik!');
-  this.location.back();
-  }
 }

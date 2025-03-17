@@ -47,6 +47,7 @@ import { AutWatchlistComponent } from './components/author/aut-watchlist/aut-wat
 import { AutMyfilmComponent } from './components/author/aut-myfilm/aut-myfilm.component';
 import { SafeUrlPipe } from './pipe/safe-url.pipe';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -92,6 +93,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NgxPaginationModule,
   ],
   providers: [
     AuthService,

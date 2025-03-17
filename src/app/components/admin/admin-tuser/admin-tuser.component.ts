@@ -16,6 +16,8 @@ export class AdminTuserComponent implements OnInit {
   isEditMode: boolean = false;
   isAdmin = false;
   modalInstance: any;
+  currentPage = 1; // Halaman awal
+  itemsPerPage = 10; // Jumlah item per halaman
 
   constructor(private userService: UserService, private fb: FormBuilder) {
     this.userForm = this.fb.group({
@@ -160,15 +162,6 @@ export class AdminTuserComponent implements OnInit {
     }
   }
 
-  closeModal(): void {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-    }
-    this.isEditMode = false;
-    this.selectedUserId = null;
-    this.userForm.reset();
-  }
-
   getImagePath(imagePath: string): string {
     if (!imagePath) return 'assets/default-image.jpg';
     if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
@@ -176,7 +169,7 @@ export class AdminTuserComponent implements OnInit {
     }
     return this.userService.getFilmImagePath(imagePath);
   }
-
+  
   onFileSelected(event: any, field: string) {
     const file = event.target.files[0];
     if (file) {
@@ -190,4 +183,16 @@ export class AdminTuserComponent implements OnInit {
       });
     }
   }
+  
+closeModal(): void {
+  const modalElement = document.getElementById('userModal');
+  if (modalElement) {
+    import('bootstrap').then((bootstrap) => {
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    });
+  }
+}
 }

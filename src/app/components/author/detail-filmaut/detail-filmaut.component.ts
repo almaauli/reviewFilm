@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilmService } from '../../../services/film.service';
 import { WatchlistService } from '../../../services/watchlist.service';
-import { Location } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -18,7 +17,6 @@ export class DetailFilmautComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, 
     private filmService: FilmService, 
-    private location: Location, 
     private watchlistService: WatchlistService,
     private sanitizer: DomSanitizer,
     private router: Router) {}
@@ -67,11 +65,6 @@ export class DetailFilmautComponent implements OnInit {
     return remainingMinutes > 0 ? `${hours} jam ${remainingMinutes} menit` : `${hours} jam`;
   }
   
-  goBack() {
-    console.log('Tombol kembali diklik!');
-    this.location.back();
-  }
-
   redirectToKomen(id_film: number) {
     this.router.navigate(['/aut-komen', id_film]);
   }

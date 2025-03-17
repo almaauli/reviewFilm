@@ -43,7 +43,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let genre of genreList">
+              <tr *ngFor="let genre of genreList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
                 <td>{{ genre.id_genre }}</td>
                 <td>{{ genre.nama_genre }}</td>
                 <td>{{ genre.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -55,6 +55,7 @@
               </tr>
             </tbody>
           </table>
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
 

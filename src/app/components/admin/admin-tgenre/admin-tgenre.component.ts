@@ -14,6 +14,8 @@ export class AdminTgenreComponent implements OnInit {
   selectedGenreId: number | null = null;
   isEditMode: boolean = false;
   isAdmin = false;
+  currentPage = 1; // Halaman awal
+  itemsPerPage = 10; // Jumlah item per halaman
 
   constructor(private genreService: GenreService, private fb: FormBuilder) {
     this.genreForm = this.fb.group({
@@ -46,6 +48,7 @@ export class AdminTgenreComponent implements OnInit {
         () => {
           this.loadGenres();
           this.genreForm.reset();
+          this.closeModal();
           Swal.fire('Sukses!', 'Genre berhasil ditambahkan.', 'success');
         },
         (error) => {
@@ -71,6 +74,7 @@ export class AdminTgenreComponent implements OnInit {
             this.genreForm.reset();
             this.selectedGenreId = null;
             this.isEditMode = false;
+            this.closeModal();
             Swal.fire('Sukses!', 'Genre berhasil diperbarui.', 'success');
           },
           (error) => {
@@ -103,5 +107,17 @@ export class AdminTgenreComponent implements OnInit {
         );
       }
     });
+  }
+
+  closeModal(): void {
+    const modalElement = document.getElementById('addGenreModal');
+    if (modalElement) {
+      import('bootstrap').then((bootstrap) => {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+          modalInstance.hide();
+        }
+      });
+    }
   }
 }

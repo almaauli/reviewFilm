@@ -57,6 +57,40 @@ db.connect((err) => {
   console.log("Terhubung ke database MySQL");
 });
 
+// Storage untuk gambar dan video
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (file.mimetype.startsWith('video/')) {
+      cb(null, './mp4'); // Jika file adalah video, simpan di folder 'mp4'
+    } else {
+      cb(null, './uploads'); // Jika file adalah gambar, simpan di folder 'uploads'
+    }
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Rename file dengan timestamp
+  }
+});
+
+// Filter untuk hanya menerima gambar dan video
+const fileFilter = (req, file, cb) => {
+  const filetypes = /jpeg|jpg|png|gif|mp4|avi|mov/; // Ekstensi yang diizinkan
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (extname && mimetype) {
+    return cb(null, true);
+  } else {
+    cb('Error: File harus berupa gambar atau video');
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 } // Maksimal 10MB
+});
+
+
 //middleware verify
 const verifyToken = require("./verifyToken");
 app.get("/protected-route", verifyToken, (req, res) => {
@@ -397,7 +431,6 @@ app.post("/films", (req, res) => {
     res.json({ message: "Film berhasil ditambahkan", id: result.insertId });
   });
 });
-
 app.put("/films/:id", (req, res) => {
   const { id } = req.params;
   const {
@@ -818,39 +851,6 @@ app.delete("/api/watchlist/:id_film/:id_user", (req, res) => {
   });
 });
 
-// Storage untuk gambar dan video
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (file.mimetype.startsWith('video/')) {
-      cb(null, './mp4'); // Jika file adalah video, simpan di folder 'mp4'
-    } else {
-      cb(null, './uploads'); // Jika file adalah gambar, simpan di folder 'uploads'
-    }
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Rename file dengan timestamp
-  }
-});
-
-// Filter untuk hanya menerima gambar dan video
-const fileFilter = (req, file, cb) => {
-  const filetypes = /jpeg|jpg|png|gif|mp4|avi|mov/; // Ekstensi yang diizinkan
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (extname && mimetype) {
-    return cb(null, true);
-  } else {
-    cb('Error: File harus berupa gambar atau video');
-  }
-};
-
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 } // Maksimal 10MB
-});
-
 // Endpoint upload file
 app.post('/api/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
@@ -928,8 +928,6 @@ app.put("/profile/:id", upload.single("profile"), (req, res) => {
     });
   });
 });
-
-
 
 //author
 app.get("/films/author/:id", (req, res) => {

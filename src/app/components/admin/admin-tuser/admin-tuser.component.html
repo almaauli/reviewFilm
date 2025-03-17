@@ -41,13 +41,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let user of userList">
+          <tr *ngFor="let user of userList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
             <td>{{ user.id_user }}</td>
             <td>{{ user.nama }}</td>
             <td>{{ user.usia }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
-            <td> <td>
+            <td>
               <img [src]="getImagePath(user.profile)" alt="Profile Picture" class="img-fluid" />
             </td>
             <td>{{ user.watchlist }}</td>
@@ -60,7 +60,7 @@
           </tr>
         </tbody>
       </table>
-    
+      <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
       <!-- Modal User -->
       <div class="modal fade" id="userModal" tabindex="-1">
         <div class="modal-dialog">

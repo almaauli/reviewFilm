@@ -16,6 +16,8 @@ export class AdminTtahunComponent implements OnInit {
   isEditMode: boolean = false;
   userRole: string | null = '';
   isAdmin = false;
+  currentPage = 1; // Halaman awal
+  itemsPerPage = 10; // Jumlah item per halaman
 
   constructor(private tahunService: TahunService, private fb: FormBuilder) {
     this.tahunForm = this.fb.group({
@@ -56,6 +58,7 @@ export class AdminTtahunComponent implements OnInit {
           console.log('Tahun berhasil ditambahkan:', response);
           this.loadTahun();
           this.tahunForm.reset();
+          this.closeModal();
           Swal.fire('Sukses!', 'Tahun berhasil ditambahkan.', 'success');
         },
         (error) => {
@@ -92,6 +95,7 @@ export class AdminTtahunComponent implements OnInit {
             this.tahunForm.reset();
             this.selectedTahunId = null;
             this.isEditMode = false;
+            this.closeModal();
             Swal.fire('Sukses!', 'Tahun berhasil diperbarui.', 'success');
           },
           (error) => {
@@ -127,5 +131,17 @@ export class AdminTtahunComponent implements OnInit {
         );
       }
     });
+  }
+
+  closeModal(): void {
+    const modalElement = document.getElementById('addTahunModal');
+    if (modalElement) {
+      import('bootstrap').then((bootstrap) => {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+          modalInstance.hide();
+        }
+      });
+    }
   }
 }

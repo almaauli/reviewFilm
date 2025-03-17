@@ -14,6 +14,8 @@ export class AdminTnegaraComponent implements OnInit {
   selectedNegaraId: number | null = null;
   isEditMode: boolean = false;
   isAdmin = false;
+  currentPage = 1; // Halaman awal
+  itemsPerPage = 10; // Jumlah item per halaman
 
   constructor(private negaraService: NegaraService, private fb: FormBuilder) {
     this.negaraForm = this.fb.group({
@@ -46,6 +48,7 @@ export class AdminTnegaraComponent implements OnInit {
         () => {
           this.loadNegara();
           this.negaraForm.reset();
+          this.closeModal();
           Swal.fire('Sukses!', 'Negara berhasil ditambahkan.', 'success');
         },
         (error) => {
@@ -79,6 +82,7 @@ export class AdminTnegaraComponent implements OnInit {
             this.negaraForm.reset();
             this.selectedNegaraId = null;
             this.isEditMode = false;
+            this.closeModal();
             Swal.fire('Sukses!', 'Negara berhasil diperbarui.', 'success');
           },
           (error) => {
@@ -111,5 +115,17 @@ export class AdminTnegaraComponent implements OnInit {
         );
       }
     });
+  }
+
+  closeModal(): void {
+    const modalElement = document.getElementById('addNegaraModal');
+    if (modalElement) {
+      import('bootstrap').then((bootstrap) => {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+          modalInstance.hide();
+        }
+      });
+    }
   }
 }

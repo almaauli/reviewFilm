@@ -24,7 +24,10 @@ export class AdminTfilmComponent implements OnInit {
   negara: any[] = [];
   isAdmin = false;
   userId: number | null = null; // ✅ Perbaikan tipe data
-    safeTrailerUrl: SafeResourceUrl = '';
+  safeTrailerUrl: SafeResourceUrl = '';
+  currentPage = 1; // Halaman awal
+  itemsPerPage = 10; // Jumlah item per halaman
+
 
   constructor(
     private fb: FormBuilder,
@@ -99,9 +102,10 @@ export class AdminTfilmComponent implements OnInit {
 
       this.filmService.addFilm(filmData).subscribe(
         () => {
-          Swal.fire('Berhasil!', 'Film berhasil ditambahkan.', 'success');
           this.loadFilm();
           this.filmForm.reset();
+          this.closeModal();
+          Swal.fire('Berhasil!', 'Film berhasil ditambahkan.', 'success');
         },
         (error) => {
           console.error('Gagal menambahkan film:', error.error);
@@ -138,6 +142,7 @@ export class AdminTfilmComponent implements OnInit {
             this.filmForm.reset();
             this.selectedFilmId = null;
             this.isEditMode = false;
+            this.closeModal();
             Swal.fire('Sukses!', 'Film berhasil diperbarui.', 'success');
           },
           (error) => {
@@ -173,6 +178,18 @@ export class AdminTfilmComponent implements OnInit {
         );
       }
     });
+  }
+
+  closeModal(): void {
+    const modalElement = document.getElementById('addFilmModal');
+    if (modalElement) {
+      import('bootstrap').then((bootstrap) => {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+          modalInstance.hide();
+        }
+      });
+    }
   }
 
   getImagePath(imagePath: string): string {
@@ -214,15 +231,12 @@ export class AdminTfilmComponent implements OnInit {
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
-      
+    
         this.filmService.uploadFile(formData).subscribe((response: any) => {
-          console.log("Response dari upload:", response); // Cek respons backend
           if (response.url) {
-            this.filmForm.patchValue({ gambar_film: response.url });
-            console.log("URL diset ke form:", this.filmForm.value.gambar_film); // Debugging
+            this.filmForm.patchValue({ [field]: response.url });
           }
         });
       }
     }
-    
 }

@@ -20,16 +20,29 @@ export class NavAuthorComponent implements OnInit {
   }
 
   getImagePath(imagePath: string): string {
-    return this.userService.getFilmImagePath(imagePath);
+    if (!imagePath) return 'assets/default-profile.png'; // Default image
+  
+    // Jika sudah berupa URL, langsung dikembalikan
+    if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
+      return imagePath;
+    }
+  
+    // Jika hanya nama file, tambahkan URL backend
+    return `http://localhost:3000/uploads/${imagePath}`;
   }
+  
   
   loadUserData(): void {
     const user = this.authService.getUser(); // Ambil data user dari AuthService
+    console.log('User data:', user); // Debugging
+    
     if (user) {
       this.userName = user.nama;
       this.userProfileImage = user.profile || 'assets/default-profile.png';
+      console.log('User profile image:', this.userProfileImage); // Debugging
     }
   }
+  
   logout() {
     Swal.fire({
       title: 'Konfirmasi Logout',

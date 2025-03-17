@@ -45,7 +45,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let tahun of tahunList">
+              <tr *ngFor="let tahun of tahunList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
                 <td>{{ tahun.id_tahun }}</td>
                 <td>{{ tahun.tahun_rilis }}</td>
                 <td>{{ tahun.created_at }}</td>
@@ -67,6 +67,7 @@
               </tr>
             </tbody>
           </table>
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
 

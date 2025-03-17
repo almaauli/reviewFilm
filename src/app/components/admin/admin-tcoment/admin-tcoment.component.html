@@ -46,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let komen of komentarList">
+            <tr *ngFor="let komen of komentarList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
               <td>{{ komen.id_komentar }}</td>
               <td>{{ komen.id_film }}</td>
               <td>{{ komen.id_user }}</td>
@@ -63,6 +63,7 @@
             </tr>
           </tbody>
         </table>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
 

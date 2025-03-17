@@ -20,6 +20,8 @@ export class AdminTcomentComponent implements OnInit {
   filmList: any[] = []; // Untuk dropdown film
   userList: any[] = []; 
   isAdmin = false;
+  currentPage = 1; // Halaman awal
+  itemsPerPage = 10; // Jumlah item per halaman
 
   constructor(  private komentarService: KomentarService,
     private filmService: FilmService,
@@ -66,6 +68,7 @@ export class AdminTcomentComponent implements OnInit {
           console.log('Komentar berhasil ditambahkan:', response);
           this.loadKomentar();
           this.komentarForm.reset();
+          this.closeModal();
           Swal.fire('Sukses!', 'Komentar berhasil ditambahkan.', 'success');
         },
         (error) => {
@@ -106,6 +109,7 @@ export class AdminTcomentComponent implements OnInit {
           this.komentarForm.reset();
           this.selectedKomentarId = null;
           this.isEditMode = false;
+          this.closeModal();
           Swal.fire('Sukses!', 'Komentar berhasil diperbarui.', 'success');
         },
         (error) => {
@@ -142,4 +146,16 @@ export class AdminTcomentComponent implements OnInit {
       }
     });
   }
+  closeModal(): void {
+    const modalElement = document.getElementById('addKomentarModal');
+    if (modalElement) {
+      import('bootstrap').then((bootstrap) => {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+          modalInstance.hide();
+        }
+      });
+    }
+  }
+  
 }

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilmService } from '../../../services/film.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
@@ -16,8 +15,7 @@ export class DetailFilmComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, 
     private filmService: FilmService, 
-    private sanitizer: DomSanitizer,
-    private location: Location, 
+    private sanitizer: DomSanitizer, 
     private router: Router) {}
 
   ngOnInit(): void {
@@ -57,11 +55,6 @@ export class DetailFilmComponent implements OnInit {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return remainingMinutes > 0 ? `${hours} jam ${remainingMinutes} menit` : `${hours} jam`;
-  }
-  
-  goBack() {
-    console.log('Tombol kembali diklik!');
-  this.location.back();
   }
 
   redirectToLogin() {

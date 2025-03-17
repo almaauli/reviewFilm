@@ -23,7 +23,7 @@ export class NavAdminComponent implements OnInit {
     }
   }
 
-  logout() {
+logout() {
     Swal.fire({
       title: 'Konfirmasi Logout',
       text: 'Apakah Anda yakin ingin keluar?',
@@ -32,26 +32,25 @@ export class NavAdminComponent implements OnInit {
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
       confirmButtonText: 'Ya, Logout!',
-      cancelButtonText: 'Batal',
+      cancelButtonText: 'Batal'
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
-        localStorage.removeItem('user');
-
-        // Hapus riwayat sebelumnya untuk mencegah kembali ke halaman sebelum logout
+        localStorage.removeItem('admin');
+  
+        // Hapus riwayat sebelumnya untuk mencegah kembali ke halaman sebelumnya
         window.history.pushState(null, '', '/anon');
         window.history.pushState(null, '', '/anon');
         window.addEventListener('popstate', function () {
           window.history.pushState(null, '', '/anon');
         });
-
-        this.router.navigate(['/anon'], { replaceUrl: true }).then(() => {
-          window.location.reload();
-        });
-
+  
+        this.router.navigate(['/anon'], { replaceUrl: true });
+  
         Swal.fire('Berhasil!', 'Anda telah logout.', 'success');
       }
     });
-  }
+  }  
+  
 }

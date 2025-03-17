@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilmService } from '../../../services/film.service';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-list-filmaut',
@@ -19,7 +18,6 @@ export class ListFilmautComponent implements OnInit {
   constructor(
     private filmService: FilmService,
     private route: ActivatedRoute,
-    private location: Location
   ) {}
 
   ngOnInit() {
@@ -124,10 +122,5 @@ fetchFilmsBySearch(query: string) {
       return imagePath;
     }
     return this.filmService.getFilmImagePath(imagePath);
-  }
-
-  goBack() {
-    console.log('Tombol kembali diklik!');
-    this.location.back();
   }
 }
