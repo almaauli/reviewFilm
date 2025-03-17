@@ -18,6 +18,7 @@ export class ListFilmsubsComponent implements OnInit {
   constructor(
     private filmService: FilmService,
     private route: ActivatedRoute,
+    
   ) {}
 
   ngOnInit() {

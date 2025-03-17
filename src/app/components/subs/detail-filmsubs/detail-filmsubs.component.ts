@@ -145,4 +145,5 @@ export class DetailFilmsubsComponent implements OnInit {
         return `http://localhost:3000/videos/${videoPath}`;
       }
       
+      
 }

@@ -20,6 +20,7 @@ export class AdminTuserComponent implements OnInit {
   safeTrailerUrl: SafeResourceUrl = '';
   currentPage = 1; // Halaman awal
   itemsPerPage = 10; // Jumlah item per halaman
+  imagePreview: string | null = null;
 
   constructor(private userService: UserService, private sanitizer: DomSanitizer, private fb: FormBuilder) {
     this.userForm = this.fb.group({
@@ -43,7 +44,8 @@ export class AdminTuserComponent implements OnInit {
     this.userService.getUsers().subscribe(
       (data) => {
         this.userList = [...data]; // Pakai spread agar Angular mendeteksi perubahan
-        console.log("User list setelah load:", this.userList); // Debugging
+        console.log("User list setelah load:", this.userList);
+         // Debugging
       },
       (error) => {
         console.error('Gagal mengambil data user:', error);
@@ -96,11 +98,16 @@ export class AdminTuserComponent implements OnInit {
 
   updateUser(): void {
     console.log("Data sebelum update:", this.userForm.value); // Debugging
+  
     if (this.selectedUserId !== null) {
       const payload: any = { ...this.userForm.value };
+  
       if (!payload.password) {
         delete payload.password;
       }
+  
+      console.log("Payload yang dikirim:", payload); // Pastikan profile ada di payload
+  
       this.userService.updateUser(this.selectedUserId, payload).subscribe(
         () => {
           console.log('User berhasil diperbarui');
@@ -116,7 +123,8 @@ export class AdminTuserComponent implements OnInit {
     } else {
       console.error("ID user null!");
     }
-  }  
+  }
+  
   
   deleteUser(id: number): void {
     Swal.fire({
@@ -152,24 +160,36 @@ export class AdminTuserComponent implements OnInit {
   }
 
   getImagePath(imagePath: string): string {
-    if (!imagePath) return 'assets/default-image.jpg'; // Gambar default jika tidak ada
-    return `http://localhost:3000/uploads/${imagePath}`; // Sesuaikan dengan lokasi backend menyimpan file
+    if (!imagePath) return 'assets/default-image.jpg'; 
+    return `http://localhost:3000/uploads/${imagePath}`;
   }
   
   
   onFileSelected(event: any, field: string) {
     const file = event.target.files[0];
     if (file) {
+      const reader = new FileReader();
+  
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result; // Set preview image
+      };
+  
+      reader.readAsDataURL(file); // Convert file ke Base64 untuk preview
+  
       const formData = new FormData();
       formData.append('file', file);
   
       this.userService.uploadFile(formData).subscribe((response: any) => {
-        if (response.fileName) { // Pastikan backend mengembalikan 'fileName'
+        console.log("Response upload file:", response); // Debugging
+        
+        if (response.fileName) { 
           this.userForm.patchValue({ [field]: response.fileName });
+          this.userForm.get(field)?.updateValueAndValidity();
+          console.log("Profile setelah upload:", this.userForm.value.profile);
         }
-      });      
+      });
     }
-  }
+  }  
   
 closeModal(): void {
   const modalElement = document.getElementById('userModal');

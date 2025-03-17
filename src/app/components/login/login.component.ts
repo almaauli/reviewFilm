@@ -30,7 +30,13 @@ export class LoginComponent {
 
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
-        localStorage.setItem('user_id', res.userId);
+        localStorage.setItem('user_id', res.userId.toString()); // 🔹 Pastikan ini 'user_id' (bukan 'userId')
+
+      // ✅ Debugging
+      console.log('Data disimpan di localStorage:');
+      console.log('Token:', localStorage.getItem('token'));
+      console.log('Role:', localStorage.getItem('role'));
+      console.log('User ID:', localStorage.getItem('user_id'));
 
         setTimeout(() => {
           if (res.role === 'admin') {

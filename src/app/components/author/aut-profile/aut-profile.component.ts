@@ -28,7 +28,7 @@ export class AutProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    const storedUserId = localStorage.getItem('userId');
+    const storedUserId = localStorage.getItem('user_id');
     const userRole = localStorage.getItem('role');
 
     if (storedUserId && userRole) {

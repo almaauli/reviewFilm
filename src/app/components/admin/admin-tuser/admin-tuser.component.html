@@ -103,7 +103,9 @@
                 
                   <!-- Preview Gambar -->
                   <div *ngIf="userForm.value.profile">
-                    <img [src]="userForm.value.profile" alt="profile" class="img-fluid mt-2" style="max-width: 200px;">
+                    <img *ngIf="imagePreview" [src]="imagePreview" alt="Profile Image" 
+                    class="rounded-circle border shadow-sm" width="120" height="120">
+
                   </div>
                 </div>
                 <div class="mb-3">
