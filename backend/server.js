@@ -673,6 +673,7 @@ app.get("/api/top-reviewers", (req, res) => {
            COUNT(komentar.id_komentar) AS review_count
     FROM users
     LEFT JOIN komentar ON users.id_user = komentar.id_user
+    WHERE users.role = 'user' OR users.role = 'author'
     GROUP BY users.id_user
     ORDER BY review_count DESC
     LIMIT 5
@@ -737,14 +738,17 @@ app.get("/films/search", (req, res) => {
 app.get("/api/films/:id", (req, res) => {
   const filmId = req.params.id;
   const query = `
-    SELECT 
+   SELECT 
       f.id_film, f.nama_film, f.trailer, f.gambar_film, f.deskripsi, 
       g.nama_genre AS genre, t.tahun_rilis AS tahun, 
-      n.nama_negara AS negara, f.rating, f.durasi
+      n.nama_negara AS negara, f.rating, f.durasi,
+      u.nama AS author_name, u.profile AS author_profile,
+      f.updated_at
     FROM film f
     JOIN genre g ON f.genre = g.id_genre
     JOIN tahun t ON f.tahun = t.id_tahun
     JOIN negara n ON f.negara = n.id_negara
+    JOIN users u ON f.id_author = u.id_user
     WHERE f.id_film = ?
   `;
 
@@ -752,9 +756,10 @@ app.get("/api/films/:id", (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0)
       return res.status(404).json({ message: "Film tidak ditemukan" });
-    res.json(result[0]);
+    res.json(result[0]);  // Kirim data termasuk author_name
   });
 });
+
 app.get("/api/comments/film/:id", (req, res) => {
   const { id } = req.params;
   const sql = `

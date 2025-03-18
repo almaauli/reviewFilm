@@ -28,7 +28,7 @@ export class AnonLpComponent  implements OnInit {
   totalUsers: number = 0;
   topReviewers: any[] = [];
   searchForm: FormGroup;
-  userProfileImage: string = 'assets/default-profile.png'; // Default image
+  userProfileImage: string = 'assets/default-profile.png';
 
   constructor(private filmService: FilmService, 
     private statisticsService: StatisticsService, 
@@ -49,12 +49,12 @@ export class AnonLpComponent  implements OnInit {
 
     this.filmService.getLatestFilms().subscribe((data) => {
       this.latestFilms = data;
-      this.groupedLatestFilms = this.chunkArray(data, 3); // Kelompokkan 3 film per slide
+      this.groupedLatestFilms = this.chunkArray(data, 3); 
     });
 
     this.filmService.getPopularFilms().subscribe((data) => {
       this.popularFilms = data;
-      this.groupedPopularFilms = this.chunkArray(data, 3); // Kelompokkan 3 film per slide
+      this.groupedPopularFilms = this.chunkArray(data, 3);
     });
 
     this.filmService.getLatestComments().subscribe((data) => {
@@ -71,7 +71,7 @@ export class AnonLpComponent  implements OnInit {
   
     this.router.navigate(['/list-film'], { 
       queryParams: { search: searchQuery },
-      fragment: 'filmList' // Menyertakan fragment untuk scroll ke daftar film
+      fragment: 'filmList' 
     });
   
     console.log('Navigating with query:', searchQuery);
@@ -88,7 +88,7 @@ export class AnonLpComponent  implements OnInit {
 
   loadTopReviewers(): void {
     this.statisticsService.getTopReviewers().subscribe(data => {
-      this.topReviewers = data; // Langsung pakai data dari backend
+      this.topReviewers = data;
       this.userProfileImage =  'assets/default-profile.png';
     });
   }  
@@ -100,7 +100,7 @@ export class AnonLpComponent  implements OnInit {
   }
 
   getImagePath(imagePath: string): string {
-    if (!imagePath) return 'assets/default-image.jpg'; // Gambar default jika kosong
+    if (!imagePath) return 'assets/default-image.jpg';
     if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
       return imagePath;
     }

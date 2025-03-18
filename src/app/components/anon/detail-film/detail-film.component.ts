@@ -38,20 +38,33 @@ export class DetailFilmComponent implements OnInit {
   }
 
   getImagePath2(imagePath: string): string {
-    if (!imagePath) return 'assets/default-profile.png'; // Default image jika kosong
-    if (imagePath.startsWith('http')) return imagePath; // Jika sudah URL lengkap
+    if (!imagePath) {
+      console.warn("Gambar profile kosong, menggunakan default.");
+      return 'assets/default-profile.png'; // Gambar default jika kosong
+    }
   
-    return `http://localhost:3000/uploads/${imagePath}`; // Sesuaikan dengan path backend
+    if (imagePath.startsWith('http')) {
+      console.log("Gambar profile sudah berupa URL:", imagePath);
+      return imagePath; // Jika sudah URL lengkap
+    }
+  
+    const fullPath =  `http://localhost:3000/uploads/${imagePath}`;
+    console.log("Gambar profile diubah menjadi:", fullPath);
+    return fullPath; // Sesuaikan dengan path backend
   }
-
+  
   getFilmDetail(id: string) {
     this.filmService.getFilmById(id).subscribe((data) => {
-      console.log("Data Film:", data); 
+      console.log("Data Film dari Backend:", data); // Pastikan author_name muncul
+      
       this.film = {
         ...data,
-        trailer: `http://localhost:3000/${data.trailer.trim()}`
-      };      
-      console.log("URL Trailer:", this.film.trailer); 
+        gambar_film: this.getImagePath(data.gambar_film),
+        author_name: data.author_name,
+        author_profile: this.getImagePath2(data.author_profile),
+        updated_at: data.updated_at 
+      };
+      console.log("Nama Author di Frontend:", this.film.author_name);
     });
   }  
 

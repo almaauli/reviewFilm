@@ -6,13 +6,18 @@ html {
 body {
   font-family: "Arial", sans-serif;
   background-color: #f8f9fa;
-  padding-top: 60px;
+  padding-top: 40px;
 }
 
 h2 {
   color: #343a40;
   font-weight: bold;
   font-family: "Freckle Face", cursive;
+}
+
+.border-left {
+  border-left: 3px solid #6c757d; /* Warna garis (bisa diubah) */
+  padding-left: 10px; /* Jarak antara garis dan konten */
 }
 
 .card-img-top {

@@ -32,34 +32,43 @@ export class DetailFilmautComponent implements OnInit {
 
   getImagePath(imagePath: string): string {
     if (!imagePath) return 'assets/default-image.jpg'; // Gambar default jika kosong
-  
-    // Jika path mengandung "http" atau "https", berarti ini adalah URL langsung, langsung dikembalikan
     if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
       return imagePath;
     }
-  
-    // Jika bukan URL, anggap sebagai path file yang di-upload dari backend
     return this.filmService.getFilmImagePath(imagePath);
   }
 
   getImagePath2(imagePath: string): string {
-    if (!imagePath) return 'assets/default-profile.png'; // Default image jika kosong
-    if (imagePath.startsWith('http')) return imagePath; // Jika sudah URL lengkap
+    if (!imagePath) {
+      console.warn("Gambar profile kosong, menggunakan default.");
+      return 'assets/default-profile.png'; // Gambar default jika kosong
+    }
   
-    return `http://localhost:3000/uploads/${imagePath}`; // Sesuaikan dengan path backend
+    if (imagePath.startsWith('http')) {
+      console.log("Gambar profile sudah berupa URL:", imagePath);
+      return imagePath; // Jika sudah URL lengkap
+    }
+  
+    const fullPath =  `http://localhost:3000/uploads/${imagePath}`;
+    console.log("Gambar profile diubah menjadi:", fullPath);
+    return fullPath; // Sesuaikan dengan path backend
   }
-
+  
   getFilmDetail(id: string) {
     this.filmService.getFilmById(id).subscribe((data) => {
-      console.log("Data Film:", data); 
+      console.log("Data Film dari Backend:", data); // Pastikan author_name muncul
+      
       this.film = {
         ...data,
-        trailer: `http://localhost:3000/${data.trailer.trim()}`
-      };      
-      console.log("URL Trailer:", this.film.trailer); 
+        gambar_film: this.getImagePath(data.gambar_film),
+        author_name: data.author_name,
+        author_profile: this.getImagePath2(data.author_profile),
+        updated_at: data.updated_at  
+      };
+      console.log("Nama Author di Frontend:", this.film.author_name);
     });
   }  
-
+  
   getFilmComments(id: string) {
     this.filmService.getCommentsByFilmId(id).subscribe((data: any[]) => {
       console.log("Data Komentar dari Backend:", data); // Debugging
@@ -122,30 +131,31 @@ export class DetailFilmautComponent implements OnInit {
   }
 
       // Cek apakah URL adalah link YouTube
-  getSafeUrl(trailerUrl: string): SafeResourceUrl {
-       const embedUrl = this.getEmbedUrl(trailerUrl);
-       return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
-     }
-   
-     isYouTubeVideo(trailerUrl: string): boolean {
-       return trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be');
-     }
-   
-       // Konversi URL YouTube menjadi embeddable link
-     getEmbedUrl(trailerUrl: string): string {
-       if (!trailerUrl) return '';
-   
-       const videoIdMatch = trailerUrl.match(/(?:youtube\.com\/(?:.*v=|embed\/|v\/)|youtu\.be\/)([^&?]+)/);
-       return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : trailerUrl;
-     }
-   
-     getVideoPath(videoPath: string): string {
-       console.log("Mendapatkan path video:", videoPath); // Log untuk memastikan path video
-       if (!videoPath) return '';
-       if (videoPath.startsWith('http')) {
-         return videoPath;
-       }
-       return `http://localhost:3000/videos/${videoPath}`;
-     }
-     
+      getSafeUrl(trailerUrl: string): SafeResourceUrl {
+        const embedUrl = this.getEmbedUrl(trailerUrl);
+        return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+      }
+    
+      isYouTubeVideo(trailerUrl: string): boolean {
+        return trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be');
+      }
+    
+        // Konversi URL YouTube menjadi embeddable link
+      getEmbedUrl(trailerUrl: string): string {
+        if (!trailerUrl) return '';
+    
+        const videoIdMatch = trailerUrl.match(/(?:youtube\.com\/(?:.*v=|embed\/|v\/)|youtu\.be\/)([^&?]+)/);
+        return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : trailerUrl;
+      }
+    
+      getVideoPath(videoPath: string): string {
+        console.log("Mendapatkan path video:", videoPath); // Log untuk memastikan path video
+        if (!videoPath) return '';
+        if (videoPath.startsWith('http')) {
+          return videoPath;
+        }
+        return `http://localhost:3000/videos/${videoPath}`;
+      }
+      
+
 }
