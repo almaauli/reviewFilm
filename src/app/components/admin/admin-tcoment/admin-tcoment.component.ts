@@ -52,14 +52,15 @@ export class AdminTcomentComponent implements OnInit {
   loadKomentar(): void {
     this.komentarService.getKomentar().subscribe(
       (data) => {
+        console.log('Data komentar terbaru:', data); // Debugging
         this.komentarList = data;
       },
       (error) => {
         console.error('Gagal mengambil data komentar:', error);
-        Swal.fire('Error!', 'Gagal mengambil data komentar. Silakan coba lagi.', 'error');
+        Swal.fire('Error!', 'Gagal mengambil data komentar.', 'error');
       }
     );
-  }
+  }  
 
   onSubmit(): void {
     if (this.komentarForm.valid) {
@@ -82,14 +83,22 @@ export class AdminTcomentComponent implements OnInit {
   editKomentar(komentar: any): void {
     this.selectedKomentarId = komentar.id_komentar;
     this.isEditMode = true;
-    this.komentarForm.patchValue({
-      id_film: komentar.id_film,
-      id_user: komentar.id_user,
-      rating_user: komentar.rating_user,
-      komentar: komentar.komentar,
-    });
-
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  
+    // Pastikan data film dan user sudah tersedia
+    if (this.filmList.length === 0 || this.userList.length === 0) {
+      this.loadDropdownData();
+    }
+  
+    // Tunggu sedikit waktu agar data dropdown siap sebelum set form
+    setTimeout(() => {
+      this.komentarForm.patchValue({
+        id_film: komentar.id_film,
+        id_user: komentar.id_user,
+        rating_user: komentar.rating_user,
+        komentar: komentar.komentar,
+      });
+  
+      // Buka modal setelah form terisi
       const modalElement = document.getElementById('addKomentarModal');
       if (modalElement) {
         import('bootstrap').then((bootstrap) => {
@@ -97,9 +106,9 @@ export class AdminTcomentComponent implements OnInit {
           modalInstance.show();
         });
       }
-    }
+    }, 500); // Delay 500ms untuk menunggu data siap
   }
-
+  
   updateKomentar(): void {
     if (this.komentarForm.valid && this.selectedKomentarId !== null) {
       this.komentarService.updateKomentar(this.selectedKomentarId, this.komentarForm.value).subscribe(

@@ -48,8 +48,8 @@
           <tbody>
             <tr *ngFor="let komen of komentarList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
               <td>{{ komen.id_komentar }}</td>
-              <td>{{ komen.id_film }}</td>
-              <td>{{ komen.id_user }}</td>
+              <td>{{ komen.film }}</td>
+              <td>{{ komen.user }}</td>
               <td>{{ komen.rating_user }}</td>
               <td>
                 {{ komen.komentar }}
@@ -57,8 +57,8 @@
               <td>{{ komen.created_at }}</td>
               <td>{{ komen.updated_at }}</td>
               <td>
-                <button class="btn btn-warning btn-sm me-1" (click)="editKomentar(komen)" data-bs-toggle="modal" data-bs-target="#addKomentarModal">Edit</button>
-                <button class="btn btn-danger btn-sm" (click)="deleteKomentar(komen.id_komentar)">Hapus</button>
+                <button class="btn btn-warning btn-sm me-1" (click)="editKomentar(komen)" data-bs-toggle="modal" data-bs-target="#addKomentarModal"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-danger btn-sm" (click)="deleteKomentar(komen.id_komentar)"> <i class="bi bi-trash"></i></button>
               </td>
             </tr>
           </tbody>

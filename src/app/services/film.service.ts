@@ -82,14 +82,17 @@ export class FilmService {
     return this.http.delete(`${this.filmUrl}/${id}`);
   }
 
-  searchFilms(query?: string, genreId?: string, countryId?: string, year?: string): Observable<any[]> {
-    let params: any = {};
-    if (query) params.query = query;
-    if (genreId) params.genreId = genreId;
-    if (countryId) params.countryId = countryId;
-    if (year) params.year = year;
+  searchFilms(query?: string, genreId?: string, countryId?: string, year?: string) {
+    const params: any = {};
   
-    return this.http.get<any[]>(`${this.apiUrl}/films/search`, { params });
+    if (query) params.query = query;
+    if (genreId && genreId !== 'null' && genreId.trim() !== '') params.genreId = genreId;
+    if (countryId && countryId !== 'null' && countryId.trim() !== '') params.countryId = countryId;
+    if (year && year !== 'null' && year.trim() !== '') params.year = year;
+  
+    console.log("API Request Params:", params); // Debugging
+  
+    return this.http.get<any[]>('http://localhost:3000/films/search', { params });
   }
   
   getFilmsByAuthor(authorId: number): Observable<Film[]> {

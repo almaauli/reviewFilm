@@ -106,84 +106,44 @@
     </div>
   </div>
 
-  <div class="container my-5">
-    <div class="row d-flex justify-content-center gap-3">
-      <div class="col-md-3 col-sm-4">
-        <div class="dropdown">
-          <button
-            class="btn w-100 custom-btn"
-            type="button"
-            data-bs-toggle="dropdown"
-          >
-            Pilih Genre <i class="bi bi-caret-down-fill"></i>
-          </button>
-          <ul class="dropdown-menu w-100 text-center">
-            <li *ngFor="let genre of genres">
-              <a
-                class="dropdown-item"
-                [routerLink]="['/list-film']"
-                [queryParams]="{ genreId: genre.id_genre }"
-              >
-                {{ genre.nama_genre }}
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
+  <div class="card p-3 shadow-sm mt-5 mb-5">
+    <div class="row g-3">
       <!-- Pilih Tahun -->
-      <div class="col-md-3 col-sm-4">
-        <div class="dropdown">
-          <button
-            class="btn w-100 custom-btn"
-            type="button"
-            data-bs-toggle="dropdown"
-          >
-            Pilih Tahun <i class="bi bi-caret-down-fill"></i>
-          </button>
-          <ul class="dropdown-menu w-100 text-center">
-            <li *ngFor="let year of years">
-              <a
-                class="dropdown-item"
-                [routerLink]="['/list-film']"
-                [queryParams]="{ year: year.tahun_rilis }"
-              >
-                {{ year.tahun_rilis }}
-              </a>
-            </li>
-          </ul>
-        </div>
+      <div class="col-md-4">
+        <label for="tahunSelect" class="form-label fw-bold">Tahun</label>
+        <select id="tahunSelect" class="form-select" [(ngModel)]="selectedFilters.year">
+          <option value="" disabled selected>Pilih Tahun</option>
+          <option *ngFor="let year of years" [value]="year.tahun_rilis">{{ year.tahun_rilis }}</option>
+        </select>
       </div>
-
+  
+      <!-- Pilih Genre -->
+      <div class="col-md-4">
+        <label for="genreSelect" class="form-label fw-bold">Genre</label>
+        <select id="genreSelect" class="form-select" [(ngModel)]="selectedFilters.genre">
+          <option value="" disabled selected>Pilih Genre</option>
+          <option *ngFor="let genre of genres" [value]="genre.id_genre">{{ genre.nama_genre }}</option>
+        </select>
+      </div>
+  
       <!-- Pilih Negara -->
-      <div class="col-md-3 col-sm-4">
-        <div class="dropdown">
-          <button
-            class="btn w-100 custom-btn"
-            type="button"
-            data-bs-toggle="dropdown"
-          >
-            Pilih Negara <i class="bi bi-caret-down-fill"></i>
-          </button>
-          <ul class="dropdown-menu w-100 text-center">
-            <li *ngFor="let country of countries">
-              <a
-                class="dropdown-item"
-                [routerLink]="['/list-film']"
-                [queryParams]="{ countryId: country.id_negara }"
-              >
-                {{ country.nama_negara }}
-              </a>
-            </li>
-          </ul>
-        </div>
+      <div class="col-md-4">
+        <label for="negaraSelect" class="form-label fw-bold">Negara</label>
+        <select id="negaraSelect" class="form-select" [(ngModel)]="selectedFilters.country">
+          <option value="" disabled selected>Pilih Negara</option>
+          <option *ngFor="let country of countries" [value]="country.id_negara">{{ country.nama_negara }}</option>
+        </select>
       </div>
+    </div>
+  
+    <!-- Tombol Cari -->
+    <div class="text-center mt-3">
+      <button class="btn btn-dark w-50" (click)="applyFilter()">Cari</button>
     </div>
   </div>
 
-  <div class="container mt-2">
+  <div class="container mt-5">
     <h2 class="custom-title">Film Terpopuler</h2>
-
     <div
       id="popularFilmsCarousel"
       class="carousel slide"

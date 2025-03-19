@@ -49,8 +49,8 @@
                 <td>{{ genre.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td>{{ genre.updated_at | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td>
-                  <button class="btn btn-warning btn-sm me-1" (click)="editGenre(genre)" data-bs-toggle="modal" data-bs-target="#addGenreModal">Edit</button>
-                  <button class="btn btn-danger btn-sm" (click)="deleteGenre(genre.id_genre)">Hapus</button>
+                  <button class="btn btn-warning btn-sm me-1" (click)="editGenre(genre)" data-bs-toggle="modal" data-bs-target="#addGenreModal"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-danger btn-sm" (click)="deleteGenre(genre.id_genre)"> <i class="bi bi-trash"></i></button>
                 </td>
               </tr>
             </tbody>

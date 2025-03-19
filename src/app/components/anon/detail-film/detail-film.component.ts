@@ -62,6 +62,7 @@ export class DetailFilmComponent implements OnInit {
         gambar_film: this.getImagePath(data.gambar_film),
         author_name: data.author_name,
         author_profile: this.getImagePath2(data.author_profile),
+        aktor: data.aktor,
         updated_at: data.updated_at 
       };
       console.log("Nama Author di Frontend:", this.film.author_name);
@@ -74,6 +75,7 @@ export class DetailFilmComponent implements OnInit {
   
       this.comments = data.map((comment: any) => ({
         ...comment,
+        updated_at: new Date(comment.updated_at),
         profile: this.getImagePath2(comment.profile) // Pastikan profile tidak undefined/null
       }));      
   

@@ -29,6 +29,7 @@ export class AnonLpComponent  implements OnInit {
   topReviewers: any[] = [];
   searchForm: FormGroup;
   userProfileImage: string = 'assets/default-profile.png';
+  selectedFilters: any = {};
 
   constructor(private filmService: FilmService, 
     private statisticsService: StatisticsService, 
@@ -63,6 +64,23 @@ export class AnonLpComponent  implements OnInit {
     this.loadStatistics();
     this.loadTopReviewers();
   }
+
+    // Simpan filter yang dipilih
+    selectFilter(type: string, name: string, id?: number) {
+      this.selectedFilters[type] = name;
+      if (id !== undefined) {
+        this.selectedFilters[type + 'Id'] = id;
+      }
+    }
+  
+    applyFilter() {
+      const queryParams: any = {};
+      if (this.selectedFilters.year) queryParams.year = this.selectedFilters.year;
+      if (this.selectedFilters.genreId) queryParams.genreId = this.selectedFilters.genreId;
+      if (this.selectedFilters.countryId) queryParams.countryId = this.selectedFilters.countryId;
+  
+      this.router.navigate(['/list-film'], { queryParams });
+    }
   
   searchFilms() {
     const searchQuery = this.searchForm.value.query.trim();

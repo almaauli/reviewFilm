@@ -61,16 +61,17 @@ export class ListFilmComponent implements OnInit {
   }
   
   fetchFilms(genreId?: string, countryId?: string, year?: string) {
-    this.films = []; // Reset data sebelum mengambil yang baru
-    this.currentSection = 'list'; // Set current section agar hanya filmList yang muncul
-
+    this.films = []; // Reset list film sebelum ambil data baru
+    this.currentSection = 'list';
+  
+    // Hanya tambahkan ke query params jika nilainya valid
     const params: any = {};
-    if (genreId && genreId !== 'null' && genreId !== '') params.genreId = genreId;
-    if (countryId && countryId !== 'null' && countryId !== '') params.countryId = countryId;
-    if (year && year !== 'null' && year !== '') params.year = year;
-
+    if (genreId && genreId !== 'null' && genreId.trim() !== '') params.genreId = genreId;
+    if (countryId && countryId !== 'null' && countryId.trim() !== '') params.countryId = countryId;
+    if (year && year !== 'null' && year.trim() !== '') params.year = year;
+  
     console.log("Fetching films with params:", params); // Debugging
-
+  
     this.filmService.searchFilms(undefined, params.genreId, params.countryId, params.year).subscribe(
       (data) => {
         console.log('Hasil Pencarian dari Backend:', data);
@@ -79,8 +80,9 @@ export class ListFilmComponent implements OnInit {
       (error) => {
         console.error('Error fetching films:', error);
       }
-    );    
-}
+    );
+  }
+  
 
 fetchFilmsBySearch(query: string) {
   console.log("Searching films with query:", query); // Debugging

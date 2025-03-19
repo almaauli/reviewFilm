@@ -383,7 +383,19 @@ app.delete("/genre/:id", (req, res) => {
 
 //CRUD Film
 app.get("/films", (req, res) => {
-  const sql = "SELECT * FROM film";
+  const sql = `
+    SELECT 
+      f.id_film, f.nama_film, f.trailer, f.gambar_film, f.deskripsi, 
+      g.nama_genre AS genre, 
+      t.tahun_rilis AS tahun, 
+      n.nama_negara AS negara, 
+      f.rating, f.durasi, f.aktor, f.created_at, f.updated_at, f.id_author
+    FROM film f
+    LEFT JOIN genre g ON f.genre = g.id_genre
+    LEFT JOIN tahun t ON f.tahun = t.id_tahun
+    LEFT JOIN negara n ON f.negara = n.id_negara
+  `;
+
   db.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(results);
@@ -398,21 +410,22 @@ app.post("/films", (req, res) => {
     genre,
     tahun,
     negara,
-    rating,
     durasi,
-    id_author
+    aktor,
+    id_author,
+    rating
   } = req.body;
 
-  if (!nama_film || !trailer || !gambar_film || !deskripsi || !genre || !tahun || !negara || !rating || !durasi || !id_author) {
-    return res.status(400).json({ error: "Semua field harus diisi" });
+  if (!nama_film || !trailer || !gambar_film || !deskripsi || !genre || !tahun || !negara || !durasi || !aktor || !id_author) {
+    return res.status(400).json({ error: "Semua field harus diisi kecuali rating" });
   }
 
   const query = `
-    INSERT INTO film (nama_film, trailer, gambar_film, deskripsi, genre, tahun, negara, rating, durasi, id_author, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+    INSERT INTO film (nama_film, trailer, gambar_film, deskripsi, genre, tahun, negara, rating, durasi, aktor, id_author, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW());
   `;
 
-  db.query(query, [
+  const filmData = [
     nama_film,
     trailer,
     gambar_film,
@@ -420,10 +433,13 @@ app.post("/films", (req, res) => {
     genre,
     tahun,
     negara,
-    rating,
+    rating || null,
     durasi,
+    aktor,
     id_author
-  ], (err, result) => {
+  ];
+
+  db.query(query, filmData, (err, result) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({ error: err.message });
@@ -443,31 +459,46 @@ app.put("/films/:id", (req, res) => {
     negara,
     rating,
     durasi,
+    aktor,
   } = req.body;
-  const sql = `UPDATE film SET nama_film=?, trailer=?, gambar_film=?, deskripsi=?, genre=?, tahun=?, negara=?, rating=?, durasi=?, updated_at=NOW() WHERE id_film=?`;
+
+  const updateSql = `
+    UPDATE film 
+    SET nama_film=?, trailer=?, gambar_film=?, deskripsi=?, 
+        genre=?, tahun=?, negara=?, rating=?, durasi=?, aktor=?, updated_at=NOW() 
+    WHERE id_film=?`;
+
   db.query(
-    sql,
-    [
-      nama_film,
-      trailer,
-      gambar_film,
-      deskripsi,
-      genre,
-      tahun,
-      negara,
-      rating,
-      durasi,
-      id,
-    ],
+    updateSql,
+    [nama_film, trailer, gambar_film, deskripsi, genre, tahun, negara, rating, durasi, aktor, id],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: "Film berhasil diperbarui" });
+
+      // Setelah update berhasil, ambil data yang sudah diperbarui dengan nama genre, tahun, dan negara
+      const selectSql = `
+        SELECT 
+          f.id_film, f.nama_film, f.trailer, f.gambar_film, f.deskripsi, 
+          g.nama_genre AS genre, 
+          t.tahun_rilis AS tahun, 
+          n.nama_negara AS negara, 
+          f.rating, f.durasi, f.aktor, f.created_at, f.updated_at, f.id_author
+        FROM film f
+        LEFT JOIN genre g ON f.genre = g.id_genre
+        LEFT JOIN tahun t ON f.tahun = t.id_tahun
+        LEFT JOIN negara n ON f.negara = n.id_negara
+        WHERE f.id_film = ?`;
+
+      db.query(selectSql, [id], (err, updatedFilm) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Film berhasil diperbarui", film: updatedFilm[0] });
+      });
     }
   );
 });
 app.delete("/films/:id", (req, res) => {
   const { id } = req.params;
   const sql = "DELETE FROM film WHERE id_film=?";
+  
   db.query(sql, [id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ message: "Film berhasil dihapus" });
@@ -476,8 +507,23 @@ app.delete("/films/:id", (req, res) => {
 
 //CRUD Komentar
 app.get("/komentar", (req, res) => {
-  db.query("SELECT * FROM komentar", (err, results) => {
-    if (err) throw err;
+  const sql = `
+    SELECT k.id_komentar, 
+           f.id_film, f.nama_film AS film, 
+           u.id_user, u.nama AS user, 
+           k.rating_user, 
+           k.komentar, 
+           k.created_at, 
+           k.updated_at
+    FROM komentar k
+    LEFT JOIN film f ON k.id_film = f.id_film
+    LEFT JOIN users u ON k.id_user = u.id_user;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Gagal mengambil data komentar" });
+    }
     res.json(results);
   });
 });
@@ -568,6 +614,7 @@ app.get("/total-users", (req, res) => {
     res.json({ totalUsers: result[0].total });
   });
 });
+
 app.get("/total-film", (req, res) => {
   const query = "SELECT COUNT(*) AS total FROM film";
   db.query(query, (err, result) => {
@@ -655,9 +702,9 @@ app.get("/api/comments", (req, res) => {
 app.get("/api/statistics", (req, res) => {
   const statsQuery = `
     SELECT 
-      (SELECT COUNT(*) FROM film) AS totalMovies,
-      (SELECT COUNT(*) FROM komentar) AS totalReviews,
-      (SELECT COUNT(*) FROM users WHERE role = 'user') AS totalUsers
+    (SELECT COUNT(*) FROM film) AS totalMovies,
+    (SELECT COUNT(*) FROM komentar) AS totalReviews,
+    (SELECT COUNT(*) FROM users WHERE role IN ('user', 'author')) AS totalUsers
   `;
 
   db.query(statsQuery, (err, result) => {
@@ -698,25 +745,27 @@ app.get("/films/search", (req, res) => {
       SELECT f.* 
       FROM film f
       JOIN tahun t ON f.tahun = t.id_tahun
+      JOIN genre g ON f.genre = g.id_genre
+      JOIN negara n ON f.negara = n.id_negara
       WHERE 1=1
   `;
   const params = [];
 
   if (query) {
     sql += " AND f.nama_film LIKE ?";
-    params.push(`%${query}%`); // Menggunakan LIKE untuk pencarian judul
+    params.push(`%${query}%`);
   }
-  if (genreId) {
-    sql += " AND f.genre = ?";
-    params.push(genreId);
+  if (genreId && genreId !== 'null' && genreId.trim() !== '') {
+    sql += " AND g.id_genre = ?";
+    params.push(parseInt(genreId)); // Pakai parseInt untuk memastikan ID numerik
   }
-  if (countryId) {
-    sql += " AND f.negara = ?";
-    params.push(countryId);
+  if (countryId && countryId !== 'null' && countryId.trim() !== '') {
+    sql += " AND n.id_negara = ?";
+    params.push(parseInt(countryId));
   }
-  if (year) {
+  if (year && year !== 'null' && year.trim() !== '') {
     sql += " AND t.tahun_rilis = ?";
-    params.push(year);
+    params.push(parseInt(year));
   }
 
   console.log("Final Query:", sql);
@@ -725,14 +774,11 @@ app.get("/films/search", (req, res) => {
   db.query(sql, params, (err, results) => {
     if (err) {
       console.error("Database error:", err.sqlMessage || err);
-      return res
-        .status(500)
-        .json({ error: err.sqlMessage || "Database error" });
+      return res.status(500).json({ error: err.sqlMessage || "Database error" });
     }
     res.json(results);
   });
 });
-
 
 //anon-detail
 app.get("/api/films/:id", (req, res) => {
@@ -743,7 +789,7 @@ app.get("/api/films/:id", (req, res) => {
       g.nama_genre AS genre, t.tahun_rilis AS tahun, 
       n.nama_negara AS negara, f.rating, f.durasi,
       u.nama AS author_name, u.profile AS author_profile,
-      f.updated_at
+      f.updated_at, f.aktor
     FROM film f
     JOIN genre g ON f.genre = g.id_genre
     JOIN tahun t ON f.tahun = t.id_tahun
@@ -759,12 +805,11 @@ app.get("/api/films/:id", (req, res) => {
     res.json(result[0]);  // Kirim data termasuk author_name
   });
 });
-
 app.get("/api/comments/film/:id", (req, res) => {
   const { id } = req.params;
   const sql = `
-    SELECT k.id_komentar, k.id_film, k.id_user, k.rating_user, k.komentar, k.created_at,
-           u.nama AS username, u.profile 
+    SELECT k.id_komentar, k.id_film, k.id_user, k.rating_user, k.komentar, k.updated_at,
+           u.nama AS username, u.profile
     FROM komentar k
     JOIN users u ON k.id_user = u.id_user
     WHERE k.id_film = ?

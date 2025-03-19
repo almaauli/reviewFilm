@@ -41,16 +41,17 @@ export class AutMyfilmComponent implements OnInit {
     this.filmModal = new bootstrap.Modal(document.getElementById('filmModal'));
 
     this.filmForm = this.fb.group({
-      nama_film: ['', Validators.required],
-      trailer: [''],
-      gambar_film: ['', Validators.required],
-      deskripsi: ['', Validators.required],
-      genre: ['', Validators.required],
-      tahun: ['', Validators.required],
-      negara: ['', Validators.required],
-      rating: ['', [Validators.required, Validators.min(0), Validators.max(10)]],
-      durasi: ['', [Validators.required, Validators.min(1)]],
-    });
+        nama_film: ['', Validators.required],
+        trailer: ['', Validators.required],
+        gambar_film: ['', Validators.required],
+        deskripsi: ['', Validators.required],
+        genre: ['', Validators.required],
+        tahun: ['', Validators.required],
+        negara: ['', Validators.required],
+        durasi: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
+        aktor: ['', Validators.required]
+      });
+      
   }
 
   getMyFilms() {
@@ -99,25 +100,50 @@ export class AutMyfilmComponent implements OnInit {
   }
 
   saveFilm() {
-    const filmData = {
-      ...this.filmForm.value,
-      id_author: this.authService.getUserId(),
-    };
-
-    if (this.isEdit && this.selectedFilmId) {
-      this.filmService.updateFilm(this.selectedFilmId, filmData).subscribe(() => {
-        Swal.fire('Berhasil!', 'Film berhasil diperbarui.', 'success');
-        this.getMyFilms();
-        this.filmModal.hide();
-      });
-    } else {
-      this.filmService.addFilm(filmData).subscribe(() => {
-        Swal.fire('Berhasil!', 'Film berhasil ditambahkan.', 'success');
-        this.getMyFilms();
-        this.filmModal.hide();
-      });
+    if (this.filmForm.valid) {
+      const userId = this.authService.getUserId();
+  
+      if (userId === null) {
+        Swal.fire('Error!', 'User ID tidak ditemukan. Silakan login ulang.', 'error');
+        return;
+      }
+  
+      const filmData = {
+        ...this.filmForm.value,
+        id_author: userId
+      };
+  
+      console.log('Data yang dikirim ke backend:', filmData);
+  
+      if (this.isEdit && this.selectedFilmId) {
+        this.filmService.updateFilm(this.selectedFilmId, filmData).subscribe(
+          () => {
+            this.getMyFilms();
+            this.filmForm.reset();
+            this.filmModal.hide();
+            Swal.fire('Berhasil!', 'Film berhasil diperbarui.', 'success');
+          },
+          (error) => {
+            console.error('Gagal memperbarui film:', error);
+            Swal.fire('Error!', `Gagal memperbarui film: ${error.error.error}`, 'error');
+          }
+        );
+      } else {
+        this.filmService.addFilm(filmData).subscribe(
+          () => {
+            this.getMyFilms();
+            this.filmForm.reset();
+            this.filmModal.hide();
+            Swal.fire('Berhasil!', 'Film berhasil ditambahkan.', 'success');
+          },
+          (error) => {
+            console.error('Gagal menambahkan film:', error);
+            Swal.fire('Error!', `Gagal menambahkan film: ${error.error.error}`, 'error');
+          }
+        );
+      }
     }
-  }
+  }  
 
   onFileSelected(event: any, field: string) {
     const file = event.target.files[0];

@@ -23,10 +23,10 @@ export class AdminTfilmComponent implements OnInit {
   tahun: any[] = [];
   negara: any[] = [];
   isAdmin = false;
-  userId: number | null = null; // ✅ Perbaikan tipe data
+  userId: number | null = null;
   safeTrailerUrl: SafeResourceUrl = '';
-  currentPage = 1; // Halaman awal
-  itemsPerPage = 10; // Jumlah item per halaman
+  currentPage = 1;
+  itemsPerPage = 10;
 
 
   constructor(
@@ -46,12 +46,10 @@ export class AdminTfilmComponent implements OnInit {
       genre: ['', Validators.required],
       tahun: ['', Validators.required],
       negara: ['', Validators.required],
-      rating: [
-        '',
-        [Validators.required, Validators.pattern(/^\d+(\.\d{1})?$/)],
-      ],
       durasi: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
+      aktor: ['', Validators.required]
     });
+    
   }
 
   ngOnInit(): void {
@@ -92,14 +90,15 @@ export class AdminTfilmComponent implements OnInit {
         Swal.fire('Error!', 'User ID tidak ditemukan. Silakan login ulang.', 'error');
         return;
       }
-
-      const filmData = {
+  
+      // Buat objek data film tanpa rating jika tidak diisi
+      const filmData: any = {
         ...this.filmForm.value,
-        id_author: this.userId, // ✅ Pastikan ID yang dikirim bertipe number
+        id_author: this.userId
       };
-
-      console.log('Data yang dikirim ke backend:', filmData); // Debugging
-
+  
+      console.log('Data yang dikirim ke backend:', filmData);
+  
       this.filmService.addFilm(filmData).subscribe(
         () => {
           this.loadFilm();
@@ -113,24 +112,37 @@ export class AdminTfilmComponent implements OnInit {
         }
       );
     }
-  }
-
+  }  
   editFilm(film: any): void {
+    console.log("Data film sebelum masuk ke form:", film); // Debugging
+  
     this.selectedFilmId = film.id_film;
     this.isEditMode = true;
-    this.filmForm.patchValue(film);
-
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      const modalElement = document.getElementById('addFilmModal');
-      if (modalElement) {
-        import('bootstrap').then((bootstrap) => {
-          const modalInstance = new bootstrap.Modal(modalElement);
-          modalInstance.show();
-        });
-      }
+  
+    if (film) {
+      const genreId = this.genre.find(g => g.nama_genre === film.genre)?.id_genre || null;
+      const tahunId = this.tahun.find(t => t.tahun_rilis === film.tahun)?.id_tahun || null;
+      const negaraId = this.negara.find(n => n.nama_negara === film.negara)?.id_negara || null;
+  
+      this.filmForm.patchValue({
+        ...film,
+        genre: genreId,
+        tahun: tahunId,
+        negara: negaraId
+      });
+    } else {
+      console.error("Data film tidak ditemukan!");
+    }
+  
+    const modalElement = document.getElementById('addFilmModal');
+    if (modalElement) {
+      import('bootstrap').then((bootstrap) => {
+        const modalInstance = new bootstrap.Modal(modalElement);
+        modalInstance.show();
+      });
     }
   }
-
+  
   updateFilm(): void {
     if (this.filmForm.valid && this.selectedFilmId !== null) {
       this.filmService
