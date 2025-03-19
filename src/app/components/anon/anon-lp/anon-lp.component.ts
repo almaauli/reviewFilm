@@ -30,6 +30,7 @@ export class AnonLpComponent  implements OnInit {
   searchForm: FormGroup;
   userProfileImage: string = 'assets/default-profile.png';
   selectedFilters: any = {};
+  showFilters = false;
 
   constructor(private filmService: FilmService, 
     private statisticsService: StatisticsService, 
@@ -69,19 +70,35 @@ export class AnonLpComponent  implements OnInit {
     selectFilter(type: string, name: string, id?: number) {
       this.selectedFilters[type] = name;
       if (id !== undefined) {
-        this.selectedFilters[type + 'Id'] = id;
+        this.selectedFilters[type + 'Id'] = id.toString(); // Konversi ke string
       }
-    }
+      console.log("Selected Filters setelah memilih:", this.selectedFilters);
+    }    
   
     applyFilter() {
       const queryParams: any = {};
-      if (this.selectedFilters.year) queryParams.year = this.selectedFilters.year;
-      if (this.selectedFilters.genreId) queryParams.genreId = this.selectedFilters.genreId;
-      if (this.selectedFilters.countryId) queryParams.countryId = this.selectedFilters.countryId;
-  
-      this.router.navigate(['/list-film'], { queryParams });
-    }
-  
+    
+      if (this.selectedFilters.genreId && this.selectedFilters.genreId !== 'null') {
+        queryParams.genreId = this.selectedFilters.genreId.toString();
+      }
+      if (this.selectedFilters.countryId && this.selectedFilters.countryId !== 'null') {
+        queryParams.countryId = this.selectedFilters.countryId.toString();
+      }
+      if (this.selectedFilters.year && this.selectedFilters.year !== 'null') {
+        queryParams.year = this.selectedFilters.year.toString();
+      }
+      if (this.selectedFilters.rating && this.selectedFilters.rating !== 'null') {
+        queryParams.rating = this.selectedFilters.rating.toString();
+      }
+    
+      console.log("📌 Query Params yang akan dikirim:", queryParams);
+    
+      this.router.navigate(['/list-film'], { 
+        queryParams: queryParams, 
+        queryParamsHandling: 'merge' 
+      });
+    }    
+    
   searchFilms() {
     const searchQuery = this.searchForm.value.query.trim();
   

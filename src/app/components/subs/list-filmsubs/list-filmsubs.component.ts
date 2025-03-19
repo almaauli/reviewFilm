@@ -23,56 +23,57 @@ export class ListFilmsubsComponent implements OnInit {
 
   ngOnInit() {
     this.loadFilms();
-  
     this.route.queryParams.subscribe(params => {
       console.log("Query Params:", params); // Debugging
-  
+    
       const searchQuery = params['search'] ? params['search'].toString() : undefined;
-      const genreId = params['genreId'] ? params['genreId'].toString() : undefined;
-      const countryId = params['countryId'] ? params['countryId'].toString() : undefined;
-      const year = params['year'] ? params['year'].toString() : undefined;
-      const section = params['section'] || undefined; // Tangkap 'section' langsung
-  
-      console.log("Processed Query Params:", { searchQuery, genreId, countryId, year, section });
-  
+      const genreId = params['genreId'] && params['genreId'] !== 'null' && params['genreId'] !== '' ? params['genreId'] : undefined;
+      const countryId = params['countryId'] && params['countryId'] !== 'null' && params['countryId'] !== '' ? params['countryId'] : undefined;
+      const year = params['year'] && params['year'] !== 'null' && params['year'] !== '' ? params['year'] : undefined;
+      const rating = params['rating'] && params['rating'] !== 'null' && params['rating'] !== '' ? params['rating'] : undefined;
+      const section = params['section'] || undefined;
+    
+      console.log("Processed Query Params:", { searchQuery, genreId, countryId, year, rating, section });
+    
       if (searchQuery) {
         console.log("Performing search:", searchQuery);
         this.currentSection = 'list';
         this.fetchFilmsBySearch(searchQuery);
-        return; // Hentikan eksekusi agar tidak memanggil `fetchFilms()`
+        return;
       } 
-  
-      if (section === 'popular') {
+    
+      if (genreId || countryId || year || rating) {
+        console.log("Fetching films by genre/country/year");
+        this.currentSection = 'list';
+        this.fetchFilms(genreId, countryId, year, rating);
+      } else if (section === 'popular') {
         console.log("Setting section to popular");
         this.currentSection = 'popular';
       } else if (section === 'latest') {
         console.log("Setting section to latest");
         this.currentSection = 'latest';
-      } else if (genreId || countryId || year) {
-        console.log("Fetching films by genre/country/year");
-        this.currentSection = 'list';
-        this.fetchFilms(genreId, countryId, year);
       } else {
         console.log("Setting section to latest (default)");
         this.currentSection = 'latest';
       }
-  
+    
       console.log("Current Section:", this.currentSection);
-    });
+    });    
   }
   
-  fetchFilms(genreId?: string, countryId?: string, year?: string) {
-    this.films = []; // Reset data sebelum mengambil yang baru
-    this.currentSection = 'list'; // Set current section agar hanya filmList yang muncul
-
+  fetchFilms(genreId?: string, countryId?: string, year?: string, rating?: string) {
+    this.films = [];
+    this.currentSection = 'list';
+  
     const params: any = {};
-    if (genreId && genreId !== 'null' && genreId !== '') params.genreId = genreId;
-    if (countryId && countryId !== 'null' && countryId !== '') params.countryId = countryId;
-    if (year && year !== 'null' && year !== '') params.year = year;
-
+    if (genreId) params.genreId = genreId;
+    if (countryId) params.countryId = countryId;
+    if (year) params.year = year;
+    if (rating) params.rating = rating;
+  
     console.log("Fetching films with params:", params); // Debugging
-
-    this.filmService.searchFilms(undefined, params.genreId, params.countryId, params.year).subscribe(
+  
+    this.filmService.searchFilms(undefined, params.genreId, params.countryId, params.year, params.rating).subscribe(
       (data) => {
         console.log('Hasil Pencarian dari Backend:', data);
         this.films = data.length > 0 ? data : []; // Kosongkan list film jika tidak ada hasil
@@ -80,8 +81,8 @@ export class ListFilmsubsComponent implements OnInit {
       (error) => {
         console.error('Error fetching films:', error);
       }
-    );    
-}
+    );
+  }
 
 fetchFilmsBySearch(query: string) {
   console.log("Searching films with query:", query); // Debugging

@@ -739,34 +739,42 @@ app.get("/api/top-reviewers", (req, res) => {
   });
 });
 app.get("/films/search", (req, res) => {
-  const { query, genreId, countryId, year } = req.query;
+  const { query, genreId, countryId, year, rating } = req.query;
+
+  console.log("Received Params:", { query, genreId, countryId, year, rating });
 
   let sql = `
       SELECT f.* 
       FROM film f
-      JOIN tahun t ON f.tahun = t.id_tahun
-      JOIN genre g ON f.genre = g.id_genre
-      JOIN negara n ON f.negara = n.id_negara
+      LEFT JOIN tahun t ON f.tahun = t.id_tahun
+      LEFT JOIN genre g ON f.genre = g.id_genre
+      LEFT JOIN negara n ON f.negara = n.id_negara
       WHERE 1=1
   `;
   const params = [];
 
-  if (query) {
+  if (query && query.trim() !== "") {
     sql += " AND f.nama_film LIKE ?";
     params.push(`%${query}%`);
   }
-  if (genreId && genreId !== 'null' && genreId.trim() !== '') {
-    sql += " AND g.id_genre = ?";
-    params.push(parseInt(genreId)); // Pakai parseInt untuk memastikan ID numerik
+  if (genreId && genreId !== "null" && !isNaN(genreId)) {
+    sql += " AND f.genre = ?";
+    params.push(parseInt(genreId));
   }
-  if (countryId && countryId !== 'null' && countryId.trim() !== '') {
-    sql += " AND n.id_negara = ?";
+  if (countryId && countryId !== "null" && !isNaN(countryId)) {
+    sql += " AND f.negara = ?";
     params.push(parseInt(countryId));
   }
-  if (year && year !== 'null' && year.trim() !== '') {
+  if (year && year !== "null" && !isNaN(year)) {
     sql += " AND t.tahun_rilis = ?";
     params.push(parseInt(year));
   }
+  if (rating && rating !== "null" && !isNaN(rating)) {
+    sql += " AND f.rating = ?";
+    params.push(parseFloat(rating));
+  }
+
+  sql += " ORDER BY f.nama_film ASC";
 
   console.log("Final Query:", sql);
   console.log("Final Params:", params);

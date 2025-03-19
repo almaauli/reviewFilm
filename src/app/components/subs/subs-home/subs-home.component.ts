@@ -27,6 +27,8 @@ export class SubsHomeComponent  implements OnInit {
   totalUsers: number = 0;
   topReviewers: any[] = [];
   searchForm: FormGroup;
+  selectedFilters: any = {};
+  showFilters = false;
 
   constructor(private filmService: FilmService, 
     private statisticsService: StatisticsService, 
@@ -61,6 +63,40 @@ export class SubsHomeComponent  implements OnInit {
     this.loadTopReviewers();
   }
   
+ // Simpan filter yang dipilih
+ selectFilter(type: string, name: string, id?: number) {
+  this.selectedFilters[type] = name;
+  if (id !== undefined) {
+    this.selectedFilters[type + 'Id'] = id.toString(); // Konversi ke string
+  }
+  console.log("Selected Filters setelah memilih:", this.selectedFilters);
+}    
+
+applyFilter() {
+  const queryParams: any = {};
+
+  if (this.selectedFilters.genreId && this.selectedFilters.genreId !== 'null') {
+    queryParams.genreId = this.selectedFilters.genreId.toString();
+  }
+  if (this.selectedFilters.countryId && this.selectedFilters.countryId !== 'null') {
+    queryParams.countryId = this.selectedFilters.countryId.toString();
+  }
+  if (this.selectedFilters.year && this.selectedFilters.year !== 'null') {
+    queryParams.year = this.selectedFilters.year.toString();
+  }
+  if (this.selectedFilters.rating && this.selectedFilters.rating !== 'null') {
+    queryParams.rating = this.selectedFilters.rating.toString();
+  }
+
+  console.log("📌 Query Params yang akan dikirim:", queryParams);
+
+  this.router.navigate(['/list-filmsubs'], { 
+    queryParams: queryParams, 
+    queryParamsHandling: 'merge' 
+  });
+}    
+
+
   searchFilms() {
     const searchQuery = this.searchForm.value.query.trim();
   

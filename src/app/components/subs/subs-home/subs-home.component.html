@@ -19,6 +19,58 @@
           </form>          
         </div>
       </div>
+
+      <div class="d-flex justify-content-end mt-5 mb-3">
+        <button class="btn btn-dark" (click)="showFilters = !showFilters">
+          <i class="bi bi-funnel"></i> {{ showFilters ? 'Sembunyikan Filter' : 'Tampilkan Filter' }}
+        </button>
+      </div>
+      <div *ngIf="showFilters"  class="card p-3 shadow-sm mt-3 w-50 mx-auto mb-5">
+        <div class="row g-3">
+          <h3>Filtered By</h3>
+          <!-- Pilih Tahun -->
+          <div class="col-md-4">
+            <label for="tahunSelect" class="form-label fw-bold">Tahun</label>
+            <select id="tahunSelect" class="form-select" [(ngModel)]="selectedFilters.year">
+              <option value="" disabled selected>Pilih Tahun</option>
+              <option *ngFor="let year of years" [value]="year.tahun_rilis">{{ year.tahun_rilis }}</option>
+            </select>
+          </div>
+      
+          <!-- Pilih Genre -->
+          <div class="col-md-4">
+            <label for="genreSelect" class="form-label fw-bold">Genre</label>
+            <select id="genreSelect" class="form-select" [(ngModel)]="selectedFilters.genreId">
+              <option value="" disabled selected>Pilih Genre</option>
+              <option *ngFor="let genre of genres" [value]="genre.id_genre">{{ genre.nama_genre }}</option>
+            </select>
+          </div>
+      
+          <!-- Pilih Negara -->
+          <div class="col-md-4">
+            <label for="negaraSelect" class="form-label fw-bold">Negara</label>
+            <select id="negaraSelect" class="form-select" [(ngModel)]="selectedFilters.countryId">
+              <option value="" disabled selected>Pilih Negara</option>
+              <option *ngFor="let country of countries" [value]="country.id_negara">{{ country.nama_negara }}</option>
+            </select>
+          </div>
+        </div>
+      
+        <!-- Pilih Rating -->
+      <div class="col-md-4">
+        <label for="ratingSelect" class="form-label fw-bold">Rating</label>
+        <select id="ratingSelect" class="form-select" [(ngModel)]="selectedFilters.rating">
+          <option value="" disabled selected>Pilih Rating</option>
+          <option *ngFor="let r of [5, 4, 3, 2, 1]" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+      
+        <!-- Tombol Cari -->
+        <div class="text-center mt-3">
+          <button class="btn btn-dark w-50" (click)="applyFilter()">Cari</button>
+        </div>
+      </div>
+      
     
     <div class="container mt-2">
       <h2 class="custom-title">Film Terbaru</h2>
@@ -61,84 +113,6 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
-      </div>
-    </div>
-    
-
-    <div class="container my-5">
-      <div class="row d-flex justify-content-center gap-3">
-        <!-- Flexbox & spacing -->
-        <!-- Pilih Genre -->
-        <div class="col-md-3 col-sm-4">
-          <div class="dropdown">
-            <button
-              class="btn w-100 custom-btn"
-              type="button"
-              data-bs-toggle="dropdown"
-            >
-              Pilih Genre <i class="bi bi-caret-down-fill"></i>
-            </button>
-            <ul class="dropdown-menu w-100 text-center">
-              <li *ngFor="let genre of genres">
-                <a
-                  class="dropdown-item"
-                  [routerLink]="['/list-filmsubs']"
-                  [queryParams]="{ genreId: genre.id_genre }"
-                >
-                  {{ genre.nama_genre }}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-  
-        <!-- Pilih Tahun -->
-        <div class="col-md-3 col-sm-4">
-          <div class="dropdown">
-            <button
-              class="btn w-100 custom-btn"
-              type="button"
-              data-bs-toggle="dropdown"
-            >
-              Pilih Tahun <i class="bi bi-caret-down-fill"></i>
-            </button>
-            <ul class="dropdown-menu w-100 text-center">
-              <li *ngFor="let year of years">
-                <a
-                  class="dropdown-item"
-                  [routerLink]="['/list-filmsubs']"
-                  [queryParams]="{ year: year.tahun_rilis }"
-                >
-                  {{ year.tahun_rilis }}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-  
-        <!-- Pilih Negara -->
-        <div class="col-md-3 col-sm-4">
-          <div class="dropdown">
-            <button
-              class="btn w-100 custom-btn"
-              type="button"
-              data-bs-toggle="dropdown"
-            >
-              Pilih Negara <i class="bi bi-caret-down-fill"></i>
-            </button>
-            <ul class="dropdown-menu w-100 text-center">
-              <li *ngFor="let country of countries">
-                <a
-                  class="dropdown-item"
-                  [routerLink]="['/list-filmsubs']"
-                  [queryParams]="{ countryId: country.id_negara }"
-                >
-                  {{ country.nama_negara }}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
     </div>
 
