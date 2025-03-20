@@ -497,11 +497,27 @@ app.put("/films/:id", (req, res) => {
 });
 app.delete("/films/:id", (req, res) => {
   const { id } = req.params;
-  const sql = "DELETE FROM film WHERE id_film=?";
-  
-  db.query(sql, [id], (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: "Film berhasil dihapus" });
+
+  // Hapus komentar terlebih dahulu
+  const deleteKomentar = "DELETE FROM komentar WHERE id_film=?";
+  db.query(deleteKomentar, [id], (err) => {
+    if (err) {
+      console.error("Gagal menghapus komentar:", err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    // Setelah komentar dihapus, baru hapus film
+    const deleteFilm = "DELETE FROM film WHERE id_film=?";
+    db.query(deleteFilm, [id], (err, result) => {
+      if (err) {
+        console.error("Gagal menghapus film:", err);
+        return res.status(500).json({ error: err.message });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Film tidak ditemukan" });
+      }
+      res.json({ message: "Film berhasil dihapus" });
+    });
   });
 });
 

@@ -135,6 +135,24 @@ form {
   overflow: hidden;
 }
 
+footer {
+  background-color: white;
+  padding: 20px;
+  position: relative;
+  bottom: 0;
+  width: auto;
+  margin-left: 250px;
+}
+
+footer .text-muted {
+  color: grey;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 @media (max-width: 768px) {
   #sidenav {
     width: 200px;

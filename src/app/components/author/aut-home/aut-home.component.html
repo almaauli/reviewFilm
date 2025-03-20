@@ -1,24 +1,38 @@
 <app-nav-author></app-nav-author>
-    <!-- Hero Section -->
-    <div class="hero-section text-center text-white bg-dark py-5">
-      <h1>Selamat Datang Moviers!</h1>
-      <p>Temukan, Tonton, dan Review Film Favoritmu!</p>
-        <div class="container my-4">
-          <form [formGroup]="searchForm" (ngSubmit)="searchFilms()" class="search-form">
-            <div class="row justify-content-center">
-              <div class="col-md-6 position-relative">
-                <div class="input-group shadow-sm">
-                  <span class="input-group-text bg-primary text-white">
-                    <i class="bi bi-search"></i>
-                  </span>
-                  <input type="text" formControlName="query" class="form-control" placeholder="Cari film berdasarkan judul..." required>
-                  <button type="submit" class="btn btn-primary">Cari</button>
-                </div>
-              </div>
-            </div>
-          </form>          
+<!-- Hero Section -->
+<div
+  class="hero-section text-center text-white d-flex align-items-center justify-content-center" 
+  style="
+  background: url('bg.jpg') center/cover no-repeat;
+  position: relative;
+  width: 100vw;
+  height: 50vh;">
+  <div class="overlay"></div>
+  <!-- Konten -->
+  <div class="container position-relative">
+    <h1 class="fw-bold">Selamat Datang Moviers!</h1>
+    <p class="lead">Temukan, Tonton, dan Review Film Favoritmu!</p>
+    <form [formGroup]="searchForm" (ngSubmit)="searchFilms()" class="search-form mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-6 position-relative">
+          <div class="input-group shadow-sm">
+            <span class="input-group-text bg-primary text-white">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              formControlName="query"
+              class="form-control"
+              placeholder="Cari film berdasarkan judul..."
+              required
+            />
+            <button type="submit" class="btn btn-primary">Cari</button>
+          </div>
         </div>
       </div>
+    </form>
+  </div>
+</div>
 
       <div class="d-flex justify-content-end mt-5 mb-3">
         <button class="btn btn-dark" (click)="showFilters = !showFilters">
@@ -216,14 +230,16 @@
         </div>
       </div>
     </div>
-
+    
     <footer class="kaki bg-dark text-white text-center py-4 mt-5 w-100">
       <p>&copy; 2025 Moviers. All rights reserved.</p>
       <p>
-        <a href="#" class="text-white text-decoration-none me-3">Kebijakan Privasi</a>
-        <a href="#" class="text-white text-decoration-none">Syarat dan Ketentuan</a>
+        <a href="mailto:salmaaulia3654@gmail.com" class="text-white me-2"><i class="fas fa-envelope"></i></a>
+        <a href="#" class="text-white me-2"><i class="fab fa-facebook"></i></a>
+        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/almaauli_?igsh=YjZyMXlnazZvODl6" class="text-white"><i class="fab fa-instagram"></i></a>
       </p>
-    </footer>
+  </footer>
     
     
     
